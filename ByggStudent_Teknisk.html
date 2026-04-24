@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ByggStudent.no — Teknisk implementering</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0c10;--bg2:#10131a;--bg3:#171b24;--bg4:#1e2330;
+  --ink:#f0ede8;--ink2:#9896a0;--muted:#4a4a55;
+  --accent:#c35a2a;--accent2:#e07a4a;
+  --green:#22c55e;--blue:#3b82f6;--purple:#8b5cf6;--amber:#f59e0b;
+  --border:rgba(255,255,255,0.07);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+nav{background:rgba(10,12,16,0.97);backdrop-filter:blur(20px);padding:0 2.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;color:var(--ink);letter-spacing:-0.02em}
+.nav-logo span{color:var(--accent2)}
+.nav-links{display:flex;gap:0.4rem}
+.nav-link{font-size:0.73rem;color:var(--ink2);text-decoration:none;padding:0.28rem 0.65rem;border-radius:5px;transition:all 0.15s}
+.nav-link:hover{color:var(--ink);background:rgba(255,255,255,0.06)}
+
+/* HERO */
+.hero{padding:4.5rem 2.5rem 5rem;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.hero-mesh{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 70% 50%,rgba(59,130,246,0.06) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 60%,rgba(195,90,42,0.07) 0%,transparent 70%);pointer-events:none}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.hero-eyebrow{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent2);font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.hero-eyebrow::before{content:'';width:20px;height:2px;background:var(--accent2)}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--ink);letter-spacing:-0.04em;line-height:1.1;margin-bottom:0.9rem}
+h1 em{color:var(--accent2);font-style:normal}
+.hero-desc{font-size:0.9rem;color:var(--ink2);line-height:1.7;margin-bottom:2rem;font-weight:300}
+.hero-stack{display:flex;flex-direction:column;gap:0.5rem}
+.stack-item{display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--ink2)}
+.stack-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.stack-icon.free{background:rgba(34,197,94,0.1)}
+.stack-icon.blue{background:rgba(59,130,246,0.1)}
+.stack-icon.purple{background:rgba(139,92,246,0.1)}
+.stack-icon.orange{background:rgba(195,90,42,0.1)}
+.stack-free{color:var(--green);font-weight:600;font-size:0.72rem;margin-left:auto;background:rgba(34,197,94,0.1);padding:0.15rem 0.5rem;border-radius:50px}
+
+/* ARCHITECTURE DIAGRAM */
+.arch{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.5rem;position:relative;overflow:hidden}
+.arch::before{content:'ARKITEKTUR';position:absolute;right:-1rem;bottom:-0.5rem;font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;color:rgba(255,255,255,0.02);pointer-events:none;letter-spacing:-0.05em}
+.arch-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;flex-wrap:wrap}
+.arch-node{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.45rem 0.85rem;font-size:0.75rem;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.arch-node.blue{border-color:rgba(59,130,246,0.3);color:var(--blue);background:rgba(59,130,246,0.06)}
+.arch-node.green{border-color:rgba(34,197,94,0.3);color:var(--green);background:rgba(34,197,94,0.06)}
+.arch-node.purple{border-color:rgba(139,92,246,0.3);color:var(--purple);background:rgba(139,92,246,0.06)}
+.arch-node.orange{border-color:rgba(195,90,42,0.3);color:var(--accent2);background:rgba(195,90,42,0.06)}
+.arch-node.amber{border-color:rgba(245,158,11,0.3);color:var(--amber);background:rgba(245,158,11,0.06)}
+.arch-arrow{color:var(--muted);font-size:0.8rem}
+.arch-label{font-size:0.62rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;font-weight:600;margin-bottom:0.35rem;margin-top:0.75rem}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:3rem 2.5rem 4rem}
+
+/* SECTION */
+.section{margin-bottom:3.5rem;scroll-margin-top:80px}
+.sec-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
+.sec-num{width:38px;height:38px;border-radius:9px;background:var(--accent);color:white;font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--ink);letter-spacing:-0.03em;line-height:1.2;margin-bottom:0.2rem}
+.sec-sub{font-size:0.83rem;color:var(--ink2);line-height:1.6}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+
+/* PANEL */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:1rem}
+.panel-head{padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:var(--ink);letter-spacing:-0.02em;display:flex;align-items:center;gap:8px}
+.panel-badge{font-size:0.62rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px}
+.panel-badge.free{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.2)}
+.panel-badge.easy{background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2)}
+.panel-badge.paid{background:rgba(245,158,11,0.1);color:var(--amber);border:1px solid rgba(245,158,11,0.2)}
+.panel-body{padding:1.1rem 1.2rem}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:12px;padding:0.8rem 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.step:last-child{border-bottom:none}
+.snum{width:22px;height:22px;border-radius:50%;background:var(--accent);color:white;font-size:0.68rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:'Syne',sans-serif}
+.scontent{flex:1}
+.stitle{font-size:0.84rem;font-weight:600;color:var(--ink);margin-bottom:0.2rem}
+.sdesc{font-size:0.78rem;color:var(--ink2);line-height:1.55}
+.scode{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.75rem;font-family:monospace;font-size:0.72rem;color:var(--ink2);margin-top:0.4rem;overflow-x:auto;word-break:break-all}
+.scode.green{background:rgba(34,197,94,0.05);border-color:rgba(34,197,94,0.15);color:var(--green)}
+
+/* CODE BLOCK */
+pre{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;font-family:monospace;font-size:0.72rem;line-height:1.75;overflow-x:auto;color:#c0bdb5;margin:0.6rem 0}
+.c{color:#6a6a75}
+.s{color:#86d9a0}
+.k{color:#7bb8f5}
+.fn{color:#e07a4a}
+.v{color:#c9a84c}
+
+/* INFO BOX */
+.ibox{border-radius:9px;padding:0.8rem 1rem;margin-bottom:0.85rem;font-size:0.8rem;line-height:1.6}
+.ibox.green{background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);color:#a7f3c0}
+.ibox.blue{background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);color:#93c5fd}
+.ibox.amber{background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);color:#fcd34d}
+.ibox.orange{background:rgba(195,90,42,0.08);border:1px solid rgba(195,90,42,0.2);color:var(--accent2)}
+.ibox strong{color:white}
+
+/* SUPABASE TABLES */
+.db-table{background:var(--bg3);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:0.75rem;font-family:monospace}
+.db-table-head{background:rgba(59,130,246,0.08);border-bottom:1px solid var(--border);padding:0.5rem 0.9rem;font-size:0.7rem;font-weight:700;color:var(--blue);letter-spacing:0.06em}
+.db-row{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.db-row:last-child{border-bottom:none}
+.db-col{padding:0.4rem 0.9rem;font-size:0.72rem;flex:1}
+.db-col:first-child{color:var(--amber);font-weight:600;flex:1.5}
+.db-col:nth-child(2){color:var(--purple)}
+.db-col:last-child{color:var(--muted)}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin:0.75rem 0}
+.flow-node{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.75rem;font-size:0.73rem;font-weight:600;color:var(--ink)}
+.flow-node.trigger{border-color:rgba(59,130,246,0.4);color:var(--blue);background:rgba(59,130,246,0.06)}
+.flow-node.action{border-color:rgba(34,197,94,0.3);color:var(--green);background:rgba(34,197,94,0.05)}
+.flow-node.data{border-color:rgba(139,92,246,0.3);color:var(--purple);background:rgba(139,92,246,0.05)}
+.flow-node.pay{border-color:rgba(245,158,11,0.3);color:var(--amber);background:rgba(245,158,11,0.05)}
+.flow-arr{color:var(--muted);font-size:0.8rem}
+
+/* COST TABLE */
+.cost-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.cost-table th{text-align:left;padding:0.5rem 0.85rem;font-size:0.65rem;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
+.cost-table td{padding:0.65rem 0.85rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+.cost-table tr:last-child td{border-bottom:none;color:white;font-weight:700}
+.cost-table tr:hover td{background:rgba(255,255,255,0.02)}
+.cost-free{color:var(--green);font-weight:700}
+.cost-pay{color:var(--amber);font-weight:700}
+
+/* TABS */
+.tabs{display:flex;gap:0.35rem;margin-bottom:1.2rem;background:var(--bg2);border-radius:9px;padding:4px;border:1px solid var(--border)}
+.tab{flex:1;text-align:center;padding:0.48rem;border-radius:6px;font-size:0.78rem;font-weight:500;cursor:pointer;transition:all 0.15s;color:var(--ink2);border:none;background:none;font-family:'Instrument Sans',sans-serif}
+.tab.active{background:var(--accent);color:white}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--border);color:var(--ink);padding:0.8rem 1.2rem;border-radius:10px;font-size:0.82rem;font-weight:500;z-index:1000;transform:translateY(70px);opacity:0;transition:all 0.3s;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:0.45rem}
+.ci{display:flex;align-items:center;gap:8px;padding:0.55rem 0.8rem;background:var(--bg3);border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:all 0.15s;font-size:0.8rem;color:var(--ink2)}
+.ci:hover{border-color:rgba(195,90,42,0.25)}
+.ci.done{background:rgba(34,197,94,0.05);border-color:rgba(34,197,94,0.2);color:rgba(34,197,94,0.7);text-decoration:line-through}
+.ci-box{width:16px;height:16px;border-radius:3px;border:1.5px solid var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all 0.15s}
+.ci.done .ci-box{background:var(--green);border-color:var(--green);color:white}
+
+/* COMPARE */
+.compare{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.compare-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.2rem;transition:border-color 0.2s}
+.compare-card:hover{border-color:rgba(195,90,42,0.25)}
+.compare-card.rec{border-color:rgba(195,90,42,0.4);background:rgba(195,90,42,0.04)}
+.compare-name{font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:var(--ink);margin-bottom:0.25rem;display:flex;align-items:center;gap:7px}
+.compare-rec{background:var(--accent);color:white;font-size:0.6rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:50px}
+.compare-price{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--green);margin-bottom:0.75rem}
+.compare-feats{display:flex;flex-direction:column;gap:0.3rem}
+.compare-feat{font-size:0.75rem;color:var(--ink2);display:flex;align-items:center;gap:5px}
+.compare-feat::before{content:'✓';color:var(--green);font-weight:700;font-size:0.7rem}
+.compare-feat.no::before{content:'✗';color:var(--muted)}
+.compare-feat.no{color:var(--muted)}
+
+@media(max-width:900px){.hero-inner,.grid-2,.grid-3,.compare{grid-template-columns:1fr}.arch-row{flex-direction:column;gap:0.4rem}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Bygg<span>Student</span>.no</div>
+  <div class="nav-links">
+    <a class="nav-link" href="ByggStudent_no.html">Nettside</a>
+    <a class="nav-link" href="ByggStudent_Admin.html">Admin</a>
+    <a class="nav-link" href="ByggStudent_Dashboard.html">Dashboard</a>
+    <a class="nav-link" href="ByggStudent_Publiseringsguide.html">Publiser</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">Backend · Database · Betalinger</div>
+      <h1>Fra demo til<br><em>ekte nettside</em></h1>
+      <p class="hero-desc">Alt du trenger for å gå fra statiske HTML-filer til en fullverdig plattform med ekte innlogging, betalinger og automatisk tilgangsstyring — uten å ansette en utvikler.</p>
+      <div class="hero-stack">
+        <div class="stack-item"><div class="stack-icon free">🔐</div>Supabase — innlogging + database<span class="stack-free">GRATIS</span></div>
+        <div class="stack-item"><div class="stack-icon blue">▲</div>Vercel — hosting + serverless funksjoner<span class="stack-free">GRATIS</span></div>
+        <div class="stack-item"><div class="stack-icon purple">💳</div>PayPal + Vipps — betalinger<span class="stack-free">0% mnd avg.</span></div>
+        <div class="stack-item"><div class="stack-icon orange">☁️</div>Google Drive — PDF-lagring<span class="stack-free">GRATIS</span></div>
+      </div>
+    </div>
+    <div class="arch">
+      <div class="arch-label">Brukerflyt</div>
+      <div class="arch-row">
+        <div class="arch-node blue">🌐 Student besøker</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node orange">📝 Registrerer seg</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node amber">💳 Betaler</div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-node green">✅ Tilgang aktivert</div>
+        <div class="arch-arrow">←</div>
+        <div class="arch-node purple">🗄️ Supabase DB</div>
+        <div class="arch-arrow">←</div>
+        <div class="arch-node amber">🔔 Webhook</div>
+      </div>
+      <div class="arch-label">Teknisk stack</div>
+      <div class="arch-row">
+        <div class="arch-node blue">▲ Vercel</div>
+        <div class="arch-arrow">+</div>
+        <div class="arch-node purple">Supabase Auth</div>
+        <div class="arch-arrow">+</div>
+        <div class="arch-node green">Drive API</div>
+        <div class="arch-arrow">+</div>
+        <div class="arch-node amber">PayPal SDK</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- STEG 1: SUPABASE -->
+  <div class="section" id="s1">
+    <div class="sec-header">
+      <div class="sec-num">1</div>
+      <div>
+        <div class="sec-title">Supabase — database og innlogging</div>
+        <div class="sec-sub">Supabase er som Firebase men gratis og åpen kildekode. Gir deg innlogging, database og API på under 10 minutter.</div>
+      </div>
+    </div>
+
+    <div class="ibox green"><strong>Gratis plan:</strong> 500 MB database, 50 000 brukere/mnd, ubegrenset autentisering. Mer enn nok for ByggStudent.no i starten.</div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">🗄️ Database-tabeller du trenger <span class="panel-badge free">GRATIS</span></div>
+        </div>
+        <div class="panel-body">
+          <div class="db-table">
+            <div class="db-table-head">📋 TABELL: brukere</div>
+            <div class="db-row"><div class="db-col">id</div><div class="db-col">uuid</div><div class="db-col">Primærnøkkel</div></div>
+            <div class="db-row"><div class="db-col">navn</div><div class="db-col">text</div><div class="db-col">Fullt navn</div></div>
+            <div class="db-row"><div class="db-col">epost</div><div class="db-col">text</div><div class="db-col">Unik</div></div>
+            <div class="db-row"><div class="db-col">plan</div><div class="db-col">enum</div><div class="db-col">basis/student/pro</div></div>
+            <div class="db-row"><div class="db-col">aktiv</div><div class="db-col">boolean</div><div class="db-col">Tilgang eller ikke</div></div>
+            <div class="db-row"><div class="db-col">opprettet</div><div class="db-col">timestamp</div><div class="db-col">Auto</div></div>
+          </div>
+          <div class="db-table">
+            <div class="db-table-head">📅 TABELL: bookinger</div>
+            <div class="db-row"><div class="db-col">id</div><div class="db-col">uuid</div><div class="db-col">Auto</div></div>
+            <div class="db-row"><div class="db-col">bruker_id</div><div class="db-col">uuid</div><div class="db-col">Ref. brukere</div></div>
+            <div class="db-row"><div class="db-col">dato</div><div class="db-col">timestamp</div><div class="db-col">Ønsket tid</div></div>
+            <div class="db-row"><div class="db-col">fag</div><div class="db-col">text</div><div class="db-col">Statikk, etc.</div></div>
+            <div class="db-row"><div class="db-col">status</div><div class="db-col">enum</div><div class="db-col">venter/bekreftet</div></div>
+            <div class="db-row"><div class="db-col">betalt</div><div class="db-col">boolean</div><div class="db-col">Fra PayPal</div></div>
+          </div>
+          <div class="db-table">
+            <div class="db-table-head">📚 TABELL: pdf_dokumenter</div>
+            <div class="db-row"><div class="db-col">id</div><div class="db-col">uuid</div><div class="db-col">Auto</div></div>
+            <div class="db-row"><div class="db-col">tittel</div><div class="db-col">text</div><div class="db-col">Navn på dokument</div></div>
+            <div class="db-row"><div class="db-col">drive_url</div><div class="db-col">text</div><div class="db-col">Google Drive lenke</div></div>
+            <div class="db-row"><div class="db-col">kategori</div><div class="db-col">text</div><div class="db-col">statikk/betong etc.</div></div>
+            <div class="db-row"><div class="db-col">krever_plan</div><div class="db-col">enum</div><div class="db-col">gratis/basis/student/pro</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">⚙️ Oppsett — 10 min</div>
+          </div>
+          <div class="panel-body">
+            <div class="steps">
+              <div class="step">
+                <div class="snum">1</div>
+                <div class="scontent">
+                  <div class="stitle">Gå til supabase.com → Start your project</div>
+                  <div class="sdesc">Logg inn med GitHub. Klikk "New Project". Gi det navn: <strong>byggstudent</strong>. Velg region: <strong>West EU (Ireland)</strong></div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="snum">2</div>
+                <div class="scontent">
+                  <div class="stitle">Opprett tabellene via SQL Editor</div>
+                  <div class="sdesc">Gå til SQL Editor → New Query → lim inn SQL-koden til høyre → Run</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="snum">3</div>
+                <div class="scontent">
+                  <div class="stitle">Kopier API-nøklene</div>
+                  <div class="sdesc">Settings → API → kopier <strong>URL</strong> og <strong>anon key</strong></div>
+                  <div class="scode">SUPABASE_URL=https://xxx.supabase.co
+SUPABASE_KEY=eyJhbGci...</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="snum">4</div>
+                <div class="scontent">
+                  <div class="stitle">Aktiver Email Auth</div>
+                  <div class="sdesc">Authentication → Providers → Email → Enable. Studenter kan nå registrere seg med e-post og passord.</div>
+                  <div class="scode green">✓ Supabase sender velkomst-e-post automatisk!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre><span class="c">-- SQL for å lage tabellene (lim inn i Supabase)</span>
+<span class="k">CREATE TABLE</span> brukere (
+  id <span class="v">uuid</span> <span class="k">DEFAULT</span> <span class="fn">gen_random_uuid</span>() <span class="k">PRIMARY KEY</span>,
+  navn <span class="v">text</span> <span class="k">NOT NULL</span>,
+  epost <span class="v">text</span> <span class="k">UNIQUE NOT NULL</span>,
+  plan <span class="v">text</span> <span class="k">DEFAULT</span> <span class="s">'basis'</span>,
+  aktiv <span class="v">boolean</span> <span class="k">DEFAULT</span> <span class="v">false</span>,
+  opprettet <span class="v">timestamp</span> <span class="k">DEFAULT</span> <span class="fn">now</span>()
+);
+
+<span class="k">CREATE TABLE</span> bookinger (
+  id <span class="v">uuid</span> <span class="k">DEFAULT</span> <span class="fn">gen_random_uuid</span>() <span class="k">PRIMARY KEY</span>,
+  bruker_id <span class="v">uuid</span> <span class="k">REFERENCES</span> brukere(id),
+  dato <span class="v">timestamp</span>,
+  fag <span class="v">text</span>,
+  melding <span class="v">text</span>,
+  status <span class="v">text</span> <span class="k">DEFAULT</span> <span class="s">'venter'</span>,
+  betalt <span class="v">boolean</span> <span class="k">DEFAULT</span> <span class="v">false</span>,
+  opprettet <span class="v">timestamp</span> <span class="k">DEFAULT</span> <span class="fn">now</span>()
+);
+
+<span class="k">CREATE TABLE</span> pdf_dokumenter (
+  id <span class="v">uuid</span> <span class="k">DEFAULT</span> <span class="fn">gen_random_uuid</span>() <span class="k">PRIMARY KEY</span>,
+  tittel <span class="v">text</span> <span class="k">NOT NULL</span>,
+  drive_url <span class="v">text</span>,
+  kategori <span class="v">text</span>,
+  krever_plan <span class="v">text</span> <span class="k">DEFAULT</span> <span class="s">'gratis'</span>,
+  aktiv <span class="v">boolean</span> <span class="k">DEFAULT</span> <span class="v">true</span>
+);</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 2: AUTH -->
+  <div class="section" id="s2">
+    <div class="sec-header">
+      <div class="sec-num">2</div>
+      <div>
+        <div class="sec-title">Innlogging og tilgangskontroll</div>
+        <div class="sec-sub">Koble Supabase Auth til nettsiden din. Studenter logger inn → systemet sjekker plan → viser riktig innhold automatisk.</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">🔐 Innloggingskode <span class="panel-badge easy">Klar til bruk</span></div></div>
+        <div class="panel-body">
+          <pre><span class="c">// Legg til i &lt;head&gt;</span>
+&lt;script src=<span class="s">"https://cdn.jsdelivr.net/npm/
+  @supabase/supabase-js@2"</span>&gt;&lt;/script&gt;
+
+<span class="c">// Initialiser</span>
+<span class="k">const</span> supabase = <span class="fn">createClient</span>(
+  <span class="s">'https://DIN_URL.supabase.co'</span>,
+  <span class="s">'DIN_ANON_KEY'</span>
+);
+
+<span class="c">// Registrer ny student</span>
+<span class="k">async function</span> <span class="fn">registrer</span>(navn, epost, passord, plan) {
+  <span class="c">// 1. Opprett bruker i Auth</span>
+  <span class="k">const</span> { data, error } = <span class="k">await</span> supabase.auth
+    .<span class="fn">signUp</span>({ email: epost, password: passord });
+
+  <span class="c">// 2. Lagre i brukere-tabellen</span>
+  <span class="k">await</span> supabase.from(<span class="s">'brukere'</span>).<span class="fn">insert</span>({
+    navn, epost, plan,
+    aktiv: <span class="v">false</span> <span class="c">// Du aktiverer manuelt</span>
+  });
+
+  <span class="c">// 3. Send e-post til deg (EmailJS)</span>
+  <span class="fn">sendAdminVarsel</span>(navn, epost, plan);
+}
+
+<span class="c">// Logg inn</span>
+<span class="k">async function</span> <span class="fn">loggInn</span>(epost, passord) {
+  <span class="k">const</span> { data } = <span class="k">await</span> supabase.auth
+    .<span class="fn">signInWithPassword</span>({ email, password });
+  <span class="k">if</span> (data.user) <span class="fn">lastDashboard</span>(data.user);
+}
+
+<span class="c">// Sjekk tilgang til PDF</span>
+<span class="k">async function</span> <span class="fn">sjekkTilgang</span>(bruker_id, pdf_id) {
+  <span class="k">const</span> bruker = <span class="k">await</span> supabase
+    .from(<span class="s">'brukere'</span>)
+    .<span class="fn">select</span>(<span class="s">'plan,aktiv'</span>)
+    .<span class="fn">eq</span>(<span class="s">'id'</span>, bruker_id)
+    .<span class="fn">single</span>();
+
+  <span class="k">const</span> pdf = <span class="k">await</span> supabase
+    .from(<span class="s">'pdf_dokumenter'</span>)
+    .<span class="fn">select</span>(<span class="s">'krever_plan,drive_url'</span>)
+    .<span class="fn">eq</span>(<span class="s">'id'</span>, pdf_id)
+    .<span class="fn">single</span>();
+
+  <span class="k">const</span> planer = [<span class="s">'gratis'</span>,<span class="s">'basis'</span>,<span class="s">'student'</span>,<span class="s">'pro'</span>];
+  <span class="k">const</span> harTilgang = bruker.aktiv &&
+    planer.<span class="fn">indexOf</span>(bruker.plan) >=
+    planer.<span class="fn">indexOf</span>(pdf.krever_plan);
+
+  <span class="k">return</span> harTilgang ? pdf.drive_url : <span class="v">null</span>;
+}</pre>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom:1rem">
+          <div class="panel-head"><div class="panel-title">🔄 Flyten — steg for steg</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:0.75rem">
+              <div>
+                <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:0.35rem">Registrering</div>
+                <div class="flow">
+                  <div class="flow-node trigger">Skjema sendt</div>
+                  <div class="flow-arr">→</div>
+                  <div class="flow-node data">Supabase Auth</div>
+                  <div class="flow-arr">→</div>
+                  <div class="flow-node action">E-post til deg</div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:0.35rem">Betaling</div>
+                <div class="flow">
+                  <div class="flow-node pay">PayPal/Vipps</div>
+                  <div class="flow-arr">→</div>
+                  <div class="flow-node trigger">Webhook</div>
+                  <div class="flow-arr">→</div>
+                  <div class="flow-node data">aktiv=true</div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:0.35rem">PDF-tilgang</div>
+                <div class="flow">
+                  <div class="flow-node trigger">Klikk PDF</div>
+                  <div class="flow-arr">→</div>
+                  <div class="flow-node data">Sjekk plan</div>
+                  <div class="flow-arr">→</div>
+                  <div class="flow-node action">Drive URL</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ibox amber"><strong>Viktig:</strong> Sett <code style="background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:3px;font-size:0.72rem">aktiv = false</code> som standard. Du aktiverer manuelt fra admin-panelet når du har bekreftet betaling — perfekt kontroll!</div>
+        <div class="ibox green"><strong>Supabase Row Level Security (RLS):</strong> Aktiver dette i Supabase — det betyr at brukere KUN ser sine egne data. Én linje SQL beskytter hele databasen.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 3: BETALING -->
+  <div class="section" id="s3">
+    <div class="sec-header">
+      <div class="sec-num">3</div>
+      <div>
+        <div class="sec-title">PayPal + Vipps — ekte betalinger</div>
+        <div class="sec-sub">To alternativer: enkel manuell flyt (du sender lenke) eller automatisk webhook-flyt. Start enkelt!</div>
+      </div>
+    </div>
+
+    <div class="tabs" id="pay-tabs">
+      <button class="tab active" onclick="showTab('pay-enkel',this,'pay-tabs')">💡 Enkel flyt (start her)</button>
+      <button class="tab" onclick="showTab('pay-auto',this,'pay-tabs')">⚡ Automatisk flyt</button>
+      <button class="tab" onclick="showTab('pay-vipps',this,'pay-tabs')">🟠 Vipps oppsett</button>
+    </div>
+
+    <div id="pay-enkel">
+      <div class="ibox blue"><strong>Anbefalt å starte med:</strong> Student registrerer seg → du ser det i admin → du sender PayPal betalingsforespørsel manuelt → student betaler → du aktiverer i Supabase. Tar 2 minutter og fungerer perfekt til du har 20+ studenter.</div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">💳 PayPal — sett opp på 5 min</div></div>
+          <div class="panel-body">
+            <div class="steps">
+              <div class="step">
+                <div class="snum">1</div>
+                <div class="scontent">
+                  <div class="stitle">Opprett PayPal Business-konto</div>
+                  <div class="sdesc">paypal.com → Sign Up → Business Account. Bruk ditt navn og norsk bankkonto.</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="snum">2</div>
+                <div class="scontent">
+                  <div class="stitle">Lag betalingslenker for hvert abonnement</div>
+                  <div class="sdesc">PayPal → Send & Request → Request Money → angi beløp og legg til som lenke på nettsiden</div>
+                  <div class="scode">paypal.me/claudiogomez/179NOK ← Student
+paypal.me/claudiogomez/379NOK ← Pro
+paypal.me/claudiogomez/79NOK  ← Basis</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="snum">3</div>
+                <div class="scontent">
+                  <div class="stitle">Slå på PayPal-varsler</div>
+                  <div class="sdesc">Settings → Notifications → Email — du får e-post hver gang noen betaler</div>
+                  <div class="scode green">✓ Du mottar: "Du har mottatt 179 kr fra Ole Studentsen"</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="snum">4</div>
+                <div class="scontent">
+                  <div class="stitle">Aktiver student i Supabase</div>
+                  <div class="sdesc">Logg inn på supabase.com → Table Editor → brukere → finn studenten → sett aktiv=true. Ferdig!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:1rem">
+            <div class="panel-head"><div class="panel-title">📊 Sammenligning av PayPal-gebyrer</div></div>
+            <div class="panel-body">
+              <table class="cost-table">
+                <thead><tr><th>Betalingstype</th><th>Gebyr</th></tr></thead>
+                <tbody>
+                  <tr><td>PayPal.me (norsk til norsk)</td><td class="cost-free">0%</td></tr>
+                  <tr><td>PayPal checkout (nettside)</td><td class="cost-pay">3.4% + 2.5 kr</td></tr>
+                  <tr><td>Vipps (privatperson)</td><td class="cost-free">0%</td></tr>
+                  <tr><td>Vipps for bedrift</td><td class="cost-pay">~2%</td></tr>
+                  <tr><td><strong>Anbefalt: PayPal.me + Vipps privat</strong></td><td class="cost-free">0 kr</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="ibox green">Start med <strong>paypal.me-lenker og Vipps</strong> — 0% gebyr, og fungerer perfekt manuelt. Koble inn automatisk PayPal Checkout API når du har 30+ studenter og vil automatisere.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pay-auto" style="display:none">
+      <div class="ibox amber"><strong>Automatisk flyt:</strong> Student betaler → PayPal sender webhook → Vercel serverless funksjon mottar → Supabase oppdateres → Student får tilgang automatisk. Ingen manuell jobb!</div>
+      <pre><span class="c">// api/paypal-webhook.js (Vercel serverless funksjon)</span>
+<span class="c">// Fil: /api/paypal-webhook.js</span>
+
+<span class="k">export default async function</span> <span class="fn">handler</span>(req, res) {
+  <span class="k">const</span> event = req.body;
+
+  <span class="c">// Sjekk at det er en betaling</span>
+  <span class="k">if</span> (event.event_type === <span class="s">'PAYMENT.CAPTURE.COMPLETED'</span>) {
+    <span class="k">const</span> epost = event.resource.payer.email_address;
+    <span class="k">const</span> beloep = event.resource.amount.value;
+
+    <span class="c">// Finn riktig plan basert på beløp</span>
+    <span class="k">const</span> plan = beloep >= <span class="v">379</span> ? <span class="s">'pro'</span>
+                : beloep >= <span class="v">179</span> ? <span class="s">'student'</span> : <span class="s">'basis'</span>;
+
+    <span class="c">// Aktiver i Supabase</span>
+    <span class="k">const</span> supabase = <span class="fn">createClient</span>(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_KEY <span class="c">// Service key!</span>
+    );
+
+    <span class="k">await</span> supabase
+      .from(<span class="s">'brukere'</span>)
+      .<span class="fn">update</span>({ aktiv: <span class="v">true</span>, plan })
+      .<span class="fn">eq</span>(<span class="s">'epost'</span>, epost);
+
+    <span class="c">// Send velkomst-e-post via EmailJS</span>
+    <span class="k">await</span> <span class="fn">sendVelkomstEpost</span>(epost, plan);
+  }
+
+  res.<span class="fn">json</span>({ status: <span class="s">'ok'</span> });
+}</pre>
+    </div>
+
+    <div id="pay-vipps" style="display:none">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">🟠 Vipps — to alternativer</div></div>
+          <div class="panel-body">
+            <div class="steps">
+              <div class="step">
+                <div class="snum">A</div>
+                <div class="scontent">
+                  <div class="stitle">Privat Vipps (anbefalt å starte)</div>
+                  <div class="sdesc">Send Vipps-nummeret ditt til studenten i e-post. Student betaler manuelt. 0% gebyr. Du aktiverer manuelt.</div>
+                  <div class="scode green">Enkelt og gratis — perfekt for 0–30 studenter</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="snum">B</div>
+                <div class="scontent">
+                  <div class="stitle">Vipps for bedrift (Vipps MobilePay)</div>
+                  <div class="sdesc">Registrer enkeltpersonforetak → søk om Vipps for bedrift på portal.vipps.no. Gir deg betalingsknapp på nettsiden.</div>
+                  <div class="scode">Koster ~kr 500 oppsett + ~2% per transaksjon</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ibox blue"><strong>Enkleste oppsett:</strong><br><br>1. Send e-post til student: "Betal 179 kr til Vipps nr. XXXXXXXX"<br>2. Student betaler<br>3. Du aktiverer i admin-panelet<br><br>Dette fungerer perfekt og er 100% gratis inntil du trenger automatisering!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 4: GOOGLE DRIVE API -->
+  <div class="section" id="s4">
+    <div class="sec-header">
+      <div class="sec-num">4</div>
+      <div>
+        <div class="sec-title">Google Drive — PDF-tilgang per plan</div>
+        <div class="sec-sub">Koble Drive til Supabase. Studenter med riktig plan ser Drive-lenken — andre ser kun låst ikon.</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="ibox blue"><strong>Enkel metode (ingen API nødvendig):</strong> Last opp PDF til Drive → Del med "alle med lenke kan se" → lim inn URL i Supabase-tabellen. Koden sjekker plan og viser lenken bare til de med tilgang.</div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">☁️ Legg til PDF i systemet</div></div>
+          <div class="panel-body">
+            <div class="steps">
+              <div class="step">
+                <div class="snum">1</div>
+                <div class="scontent">
+                  <div class="stitle">Last opp PDF til Google Drive</div>
+                  <div class="sdesc">Lag mappe: ByggStudent.no → PDF-bibliotek. Last opp alle PDF-filene dine.</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="snum">2</div>
+                <div class="scontent">
+                  <div class="stitle">Del filen — kopier lenken</div>
+                  <div class="sdesc">Høyreklikk → Del → "Alle med lenken" → Kopier lenke</div>
+                  <div class="scode">https://drive.google.com/file/d/ABC123/view</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="snum">3</div>
+                <div class="scontent">
+                  <div class="stitle">Legg til i Supabase</div>
+                  <div class="sdesc">Supabase → Table Editor → pdf_dokumenter → Insert Row → fyll ut tittel, drive_url, kategori og krever_plan</div>
+                  <div class="scode green">✓ PDF er nå tilgjengelig for studenter med riktig plan!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <pre style="font-size:0.7rem"><span class="c">// Hent PDF-liste for innlogget student</span>
+<span class="k">async function</span> <span class="fn">hentPDFer</span>(bruker) {
+  <span class="c">// Hent brukerens plan</span>
+  <span class="k">const</span> { data: b } = <span class="k">await</span> supabase
+    .from(<span class="s">'brukere'</span>)
+    .<span class="fn">select</span>(<span class="s">'plan'</span>)
+    .<span class="fn">eq</span>(<span class="s">'id'</span>, bruker.id)
+    .<span class="fn">single</span>();
+
+  <span class="c">// Hent alle PDF-er</span>
+  <span class="k">const</span> { data: pdfer } = <span class="k">await</span> supabase
+    .from(<span class="s">'pdf_dokumenter'</span>)
+    .<span class="fn">select</span>(<span class="s">'*'</span>)
+    .<span class="fn">eq</span>(<span class="s">'aktiv'</span>, <span class="v">true</span>);
+
+  <span class="k">const</span> planer = [<span class="s">'gratis'</span>,<span class="s">'basis'</span>,<span class="s">'student'</span>,<span class="s">'pro'</span>];
+  <span class="k">const</span> brukerNivaa = planer.<span class="fn">indexOf</span>(b.plan);
+
+  <span class="c">// Marker hvilke brukeren har tilgang til</span>
+  <span class="k">return</span> pdfer.<span class="fn">map</span>(pdf => ({
+    ...pdf,
+    harTilgang: brukerNivaa >=
+      planer.<span class="fn">indexOf</span>(pdf.krever_plan),
+    <span class="c">// Skjul URL hvis ikke tilgang</span>
+    drive_url: brukerNivaa >=
+      planer.<span class="fn">indexOf</span>(pdf.krever_plan)
+      ? pdf.drive_url : <span class="v">null</span>
+  }));
+}
+
+<span class="c">// Åpne PDF i viewer</span>
+<span class="k">function</span> <span class="fn">aapnePDF</span>(pdf) {
+  <span class="k">if</span> (!pdf.harTilgang) {
+    <span class="fn">visOppgraderModal</span>(); <span class="c">// Vis "Oppgrader"</span>
+    <span class="k">return</span>;
+  }
+  <span class="c">// Åpne i Google Docs viewer</span>
+  <span class="k">const</span> viewer = <span class="s">`https://docs.google.com/
+    viewer?url=</span><span class="v">${pdf.drive_url}</span><span class="s">&embedded=true`</span>;
+  document.<span class="fn">getElementById</span>(<span class="s">'pdf-iframe'</span>)
+    .src = viewer;
+}</pre>
+    </div>
+  </div>
+
+  <!-- STEG 5: DEPLOY -->
+  <div class="section" id="s5">
+    <div class="sec-header">
+      <div class="sec-num">5</div>
+      <div>
+        <div class="sec-title">Sett alt sammen og deploy</div>
+        <div class="sec-sub">Legg inn API-nøklene som miljøvariabler i Vercel — aldri skriv dem direkte i koden!</div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">🔑 Miljøvariabler i Vercel</div></div>
+        <div class="panel-body">
+          <div class="steps">
+            <div class="step">
+              <div class="snum">1</div>
+              <div class="scontent">
+                <div class="stitle">Vercel → Prosjektet ditt → Settings → Environment Variables</div>
+                <div class="sdesc">Legg til disse nøklene (kopier fra Supabase og EmailJS):</div>
+                <div class="scode">SUPABASE_URL=https://xxx.supabase.co
+SUPABASE_ANON_KEY=eyJhbGci...
+SUPABASE_SERVICE_KEY=eyJhbGci...
+EMAILJS_PUBLIC_KEY=abc123
+EMAILJS_SERVICE_ID=service_xxx
+PAYPAL_CLIENT_ID=AXxx...</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="snum">2</div>
+              <div class="scontent">
+                <div class="stitle">Redeploy prosjektet</div>
+                <div class="sdesc">Vercel → Deployments → Redeploy. Nøklene er nå aktive og sikre.</div>
+                <div class="scode green">✓ Aldri del miljøvariabler offentlig!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem">Endelig sjekkliste</div>
+        <div class="checklist">
+          <div class="ci" onclick="toggle(this)"><div class="ci-box"></div>Supabase-prosjekt opprettet og tabeller laget</div>
+          <div class="ci" onclick="toggle(this)"><div class="ci-box"></div>Supabase Auth aktivert (Email provider)</div>
+          <div class="ci" onclick="toggle(this)"><div class="ci-box"></div>Innloggingskode lagt til i index.html</div>
+          <div class="ci" onclick="toggle(this)"><div class="ci-box"></div>PayPal Business-konto opprettet</div>
+          <div class="ci" onclick="toggle(this)"><div class="ci-box"></div>Vipps-nummer klar til å sende i e-post</div>
+          <div class="ci" onclick="toggle(this)"><div class="ci-box"></div>PDF-er lastet opp til Google Drive</div>
+          <div class="ci" onclick="toggle(this)"><div class="ci-box"></div>Drive-lenker lagt inn i Supabase-tabellen</div>
+          <div class="ci" onclick="toggle(this)"><div class="ci-box"></div>Miljøvariabler satt i Vercel</div>
+          <div class="ci" onclick="toggle(this)"><div class="ci-box"></div>Test: registrer deg → betal → se PDF ✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALTERNATIV: INGEN KODE -->
+  <div class="section" id="s6">
+    <div class="sec-header">
+      <div class="sec-num">💡</div>
+      <div>
+        <div class="sec-title">Alternativ: No-Code løsning</div>
+        <div class="sec-sub">Vil du ikke skrive kode? Her er tre ferdige plattformer som gjør alt for deg — mot en månedlig avgift.</div>
+      </div>
+    </div>
+    <div class="compare">
+      <div class="compare-card rec">
+        <div class="compare-name">Memberstack <span class="compare-rec">Anbefalt</span></div>
+        <div class="compare-price">~150 kr/mnd</div>
+        <div class="compare-feats">
+          <div class="compare-feat">Innlogging + planer</div>
+          <div class="compare-feat">Kobler til HTML-siden din</div>
+          <div class="compare-feat">PayPal + Stripe</div>
+          <div class="compare-feat">Ingen koding nødvendig</div>
+          <div class="compare-feat no">Dyrere enn Supabase</div>
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-name">Gumroad</div>
+        <div class="compare-price">10% per salg</div>
+        <div class="compare-feats">
+          <div class="compare-feat">Selg PDF-er direkte</div>
+          <div class="compare-feat">Ingen oppsett</div>
+          <div class="compare-feat">Abonnementer</div>
+          <div class="compare-feat no">Ingen egendomain</div>
+          <div class="compare-feat no">Ser ikke profesjonelt ut</div>
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-name">Podia / Teachable</div>
+        <div class="compare-price">~400 kr/mnd</div>
+        <div class="compare-feats">
+          <div class="compare-feat">Alt-i-ett kursplattform</div>
+          <div class="compare-feat">PDF + video + quiz</div>
+          <div class="compare-feat">Betalinger inkludert</div>
+          <div class="compare-feat no">Dyrt for én person</div>
+          <div class="compare-feat no">Mindre fleksibelt</div>
+        </div>
+      </div>
+    </div>
+    <div class="ibox orange"><strong>Anbefaling:</strong> Start med Supabase + PayPal.me (0 kr/mnd). Når du har 20+ studenter og vil ha mer automatisering, kan du vurdere Memberstack. Du sparer 150 kr/mnd i starten — det er nesten en ekstra student!</div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showTab(id, btn, tabsId){
+  const panels = ['pay-enkel','pay-auto','pay-vipps'];
+  panels.forEach(p=>{
+    const el = document.getElementById(p);
+    if(el) el.style.display = p===id?'block':'none';
+  });
+  document.querySelectorAll(`#${tabsId} .tab`).forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggle(el){
+  el.classList.toggle('done');
+  el.querySelector('.ci-box').textContent = el.classList.contains('done')?'✓':'';
+  const total = document.querySelectorAll('.ci').length;
+  const done = document.querySelectorAll('.ci.done').length;
+  if(done===total) showToast('🎉 Alt er satt opp — ByggStudent.no er en ekte plattform!');
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+</script>
+</body>
+</html>

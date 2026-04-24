@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ByggStudent.no — Markedsføringsstrategi</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0c0e14;--bg2:#12151e;--bg3:#181c28;
+  --ink:#f2f0ea;--ink2:#9a9890;--muted:#52524e;
+  --accent:#c35a2a;--accent2:#e07a4a;
+  --gold:#c9a84c;--gold2:#e8c87a;
+  --green:#22c55e;--blue:#60a5fa;--purple:#a78bfa;
+  --border:rgba(255,255,255,0.07);
+  --surface:rgba(255,255,255,0.04);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+nav{background:rgba(12,14,20,0.95);backdrop-filter:blur(16px);padding:0 2.5rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--ink);letter-spacing:-0.02em}
+.nav-logo span{color:var(--accent2)}
+.nav-links{display:flex;gap:0.5rem}
+.nav-link{font-size:0.75rem;color:var(--ink2);text-decoration:none;padding:0.3rem 0.7rem;border-radius:5px;transition:all 0.2s}
+.nav-link:hover{color:var(--ink);background:rgba(255,255,255,0.06)}
+
+/* HERO */
+.hero{padding:5rem 2.5rem 6rem;text-align:center;position:relative;overflow:hidden;max-width:1200px;margin:0 auto}
+.hero-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(195,90,42,0.12) 0%,transparent 70%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:var(--gold2);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;padding:0.35rem 1rem;border-radius:50px;margin-bottom:1.5rem}
+.hero-tag-dot{width:6px;height:6px;border-radius:50%;background:var(--gold2);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:800;color:var(--ink);letter-spacing:-0.05em;line-height:1.06;margin-bottom:1rem}
+h1 em{color:var(--accent2);font-style:normal;position:relative}
+.hero-sub{font-size:1rem;color:var(--ink2);max-width:520px;margin:0 auto 3rem;line-height:1.7;font-weight:300}
+
+/* REVENUE PROJECTOR */
+.revenue-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:2rem;max-width:700px;margin:0 auto 3rem;position:relative;overflow:hidden}
+.revenue-box::before{content:'kr';position:absolute;right:-0.5rem;top:-1rem;font-family:'Syne',sans-serif;font-size:8rem;font-weight:800;color:rgba(195,90,42,0.04);pointer-events:none;line-height:1}
+.rev-label{font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:1rem;text-align:center}
+.rev-slider-wrap{margin-bottom:1.5rem}
+.rev-slider-label{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--ink2);margin-bottom:0.5rem}
+input[type=range]{width:100%;height:4px;border-radius:50px;background:rgba(195,90,42,0.2);outline:none;-webkit-appearance:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--bg2)}
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.rev-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center}
+.rev-card-label{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.4rem;font-weight:600}
+.rev-card-val{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--ink)}
+.rev-card-val.gold{color:var(--gold2)}
+.rev-card-val.green{color:var(--green)}
+.rev-note{font-size:0.75rem;color:var(--muted);text-align:center;margin-top:1rem;line-height:1.5}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:0 2.5rem 4rem}
+
+/* PHASE TABS */
+.phase-tabs{display:flex;gap:0.5rem;margin-bottom:2.5rem;overflow-x:auto;padding-bottom:0.2rem}
+.phase-tab{display:flex;align-items:center;gap:8px;padding:0.65rem 1.2rem;border-radius:10px;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);background:none;color:var(--ink2);font-family:'Instrument Sans',sans-serif;white-space:nowrap}
+.phase-tab:hover{background:var(--surface);color:var(--ink)}
+.phase-tab.active{background:var(--accent);border-color:var(--accent);color:white}
+.phase-tab .tab-week{font-size:0.68rem;opacity:0.7;font-weight:400}
+
+/* PHASE CONTENT */
+.phase-panel{display:none}
+.phase-panel.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* STRATEGY GRID */
+.strat-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.strat-full{margin-bottom:1.5rem}
+
+/* CHANNEL CARDS */
+.channel-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1rem;transition:border-color 0.2s}
+.channel-card:hover{border-color:rgba(195,90,42,0.3)}
+.channel-head{padding:1.1rem 1.4rem;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border)}
+.channel-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.channel-icon.fb{background:rgba(59,130,246,0.12)}
+.channel-icon.ig{background:rgba(236,72,153,0.1)}
+.channel-icon.tg{background:rgba(96,165,250,0.1)}
+.channel-icon.li{background:rgba(59,130,246,0.1)}
+.channel-icon.wa{background:rgba(34,197,94,0.1)}
+.channel-icon.sc{background:rgba(255,200,0,0.08)}
+.channel-info{flex:1}
+.channel-name{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--ink);margin-bottom:2px}
+.channel-target{font-size:0.76rem;color:var(--ink2)}
+.channel-effort{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.effort-badge{font-size:0.67rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px;white-space:nowrap}
+.effort-badge.high{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.2)}
+.effort-badge.med{background:rgba(195,90,42,0.12);color:var(--accent2);border:1px solid rgba(195,90,42,0.2)}
+.effort-badge.low{background:rgba(161,139,250,0.1);color:var(--purple);border:1px solid rgba(161,139,250,0.2)}
+.potential{font-size:0.7rem;color:var(--muted)}
+.channel-body{padding:1.1rem 1.4rem}
+.channel-tips{display:flex;flex-direction:column;gap:0.55rem}
+.tip-item{display:flex;align-items:flex-start;gap:8px;font-size:0.82rem;color:var(--ink2);line-height:1.45}
+.tip-arrow{color:var(--accent2);flex-shrink:0;margin-top:1px;font-weight:700}
+
+/* POST TEMPLATES */
+.post-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.2rem;margin-bottom:0.85rem}
+.post-platform{font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem;display:flex;align-items:center;gap:6px}
+.post-text{font-size:0.85rem;color:var(--ink);line-height:1.65;white-space:pre-line}
+.post-text strong{color:var(--accent2)}
+.post-tags{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.75rem}
+.post-tag{font-size:0.7rem;color:var(--blue);background:rgba(96,165,250,0.08);padding:0.2rem 0.5rem;border-radius:50px}
+.copy-btn{display:flex;align-items:center;gap:5px;font-size:0.72rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:5px;padding:0.25rem 0.65rem;cursor:pointer;font-family:'Instrument Sans',sans-serif;margin-top:0.6rem;transition:all 0.15s}
+.copy-btn:hover{color:var(--accent2);border-color:rgba(195,90,42,0.3)}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:2rem}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:1.5rem}
+.tl-dot{position:absolute;left:-2rem;top:3px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);flex-shrink:0}
+.tl-dot.gold{background:var(--gold)}
+.tl-dot.green{background:var(--green)}
+.tl-week{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem}
+.tl-title{font-family:'Syne',sans-serif;font-size:0.92rem;font-weight:700;color:var(--ink);margin-bottom:0.35rem}
+.tl-desc{font-size:0.81rem;color:var(--ink2);line-height:1.55}
+.tl-tasks{display:flex;flex-direction:column;gap:0.3rem;margin-top:0.5rem}
+.tl-task{font-size:0.78rem;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.tl-task::before{content:'→';color:var(--accent2);flex-shrink:0}
+
+/* INCOME TABLE */
+.income-table{width:100%;border-collapse:collapse}
+.income-table th{text-align:left;padding:0.6rem 0.85rem;font-size:0.67rem;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
+.income-table td{padding:0.75rem 0.85rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.84rem;vertical-align:middle}
+.income-table tr:last-child td{border-bottom:none;font-weight:700;color:var(--gold2)}
+.income-table tr:hover td{background:rgba(255,255,255,0.02)}
+.income-month{font-family:'Syne',sans-serif;font-weight:700}
+.income-val{font-family:'Syne',sans-serif;font-weight:700}
+.income-bar{height:6px;border-radius:50px;background:rgba(195,90,42,0.15);margin-top:4px;overflow:hidden}
+.income-fill{height:100%;border-radius:50px;background:var(--accent);transition:width 1s ease}
+
+/* INFO BOX */
+.ibox{border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.85rem;font-size:0.82rem;line-height:1.6;color:var(--ink2)}
+.ibox.blue{background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.15)}
+.ibox.gold{background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2)}
+.ibox.green{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2)}
+.ibox.orange{background:rgba(195,90,42,0.07);border:1px solid rgba(195,90,42,0.2)}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg2);border:1px solid var(--border);color:var(--ink);padding:0.8rem 1.2rem;border-radius:10px;font-size:0.84rem;font-weight:500;z-index:1000;transform:translateY(70px);opacity:0;transition:all 0.3s;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* SECTION HEADERS */
+.sec-label{font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+.panel-title{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--ink);letter-spacing:-0.02em}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1rem}
+.panel-head{padding:1rem 1.3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-body{padding:1.2rem 1.3rem}
+
+@media(max-width:768px){.strat-grid{grid-template-columns:1fr}.rev-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Bygg<span>Student</span>.no</div>
+  <div class="nav-links">
+    <a class="nav-link" href="ByggStudent_no.html">Nettside</a>
+    <a class="nav-link" href="ByggStudent_Admin.html">Admin</a>
+    <a class="nav-link" href="ByggStudent_Publiseringsguide.html">Publiser</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div style="max-width:1200px;margin:0 auto">
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag"><div class="hero-tag-dot"></div>Vekststrategi 2025</div>
+  <h1>Fra 0 til 50 studenter<br>på <em>90 dager</em></h1>
+  <p class="hero-sub">En konkret plan for å fylle ByggStudent.no med betalende studenter — kanal for kanal, uke for uke.</p>
+
+  <!-- REVENUE PROJECTOR -->
+  <div class="revenue-box">
+    <div class="rev-label">Inntektskalkulator — dra for å justere antall studenter</div>
+    <div class="rev-slider-wrap">
+      <div class="rev-slider-label">
+        <span>1 student</span>
+        <span id="slider-val" style="color:var(--accent2);font-weight:600">20 studenter</span>
+        <span>100 studenter</span>
+      </div>
+      <input type="range" min="1" max="100" value="20" id="student-slider" oninput="calcRevenue(this.value)">
+    </div>
+    <div class="rev-grid">
+      <div class="rev-card">
+        <div class="rev-card-label">Månedlig abonnement</div>
+        <div class="rev-card-val gold" id="monthly-sub">2 380 kr</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-card-label">Privattimer (estimert)</div>
+        <div class="rev-card-val" id="monthly-timer">2 400 kr</div>
+      </div>
+      <div class="rev-card">
+        <div class="rev-card-label">Total per måned</div>
+        <div class="rev-card-val green" id="monthly-total">4 780 kr</div>
+      </div>
+    </div>
+    <div class="rev-note" id="rev-note">Med 20 studenter tjener du ca. 4 780 kr/mnd — det er 57 360 kr/år ved siden av lærerjobben din 🎯</div>
+  </div>
+</div>
+</div>
+
+<div class="main">
+
+  <!-- PHASE TABS -->
+  <div class="sec-label">Velg fase</div>
+  <div class="phase-tabs">
+    <button class="phase-tab active" onclick="showPhase('fase1',this)">🚀 Fase 1 <span class="tab-week">Uke 1–2 · Første studenter</span></button>
+    <button class="phase-tab" onclick="showPhase('fase2',this)">📢 Fase 2 <span class="tab-week">Uke 3–6 · Sosiale medier</span></button>
+    <button class="phase-tab" onclick="showPhase('fase3',this)">🌱 Fase 3 <span class="tab-week">Uke 7–12 · Skalering</span></button>
+    <button class="phase-tab" onclick="showPhase('innhold',this)">✍️ Innholdsmal <span class="tab-week">Klare tekster</span></button>
+    <button class="phase-tab" onclick="showPhase('inntekt',this)">💰 Inntektsprognose</button>
+  </div>
+
+  <!-- FASE 1 -->
+  <div class="phase-panel active" id="panel-fase1">
+    <div class="ibox gold">🎯 <strong style="color:var(--gold2)">Mål uke 1–2:</strong> 5 betalende studenter fra ditt eget nettverk. Dette er din enkleste kilde — og de første kundene gir deg ekte tilbakemeldinger.</div>
+    <div class="strat-grid">
+      <div>
+        <div class="sec-label">Kanaler med høyest effekt nå</div>
+        <div class="channel-card">
+          <div class="channel-head">
+            <div class="channel-icon wa">💬</div>
+            <div class="channel-info">
+              <div class="channel-name">WhatsApp / SMS til egne studenter</div>
+              <div class="channel-target">Nåværende og tidligere elever ved Tangen VGS og Fagskolen</div>
+            </div>
+            <div class="channel-effort">
+              <span class="effort-badge high">Høyest effekt</span>
+              <span class="potential">5–10 studenter dag 1</span>
+            </div>
+          </div>
+          <div class="channel-body">
+            <div class="channel-tips">
+              <div class="tip-item"><span class="tip-arrow">→</span>Send en personlig melding til alle du kjenner som studerer bygg — ikke masse-SMS, men en personlig tekst</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Tilby de første 5 en rabatt på 50% første måned — "founding student" pris</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Be dem dele med studiemedelever — "kjenner du noen som sliter med statikk?"</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Lag en WhatsApp-gruppe for studentene — fellesskap gir verdi og lojalitet</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="channel-card">
+          <div class="channel-head">
+            <div class="channel-icon sc">🏫</div>
+            <div class="channel-info">
+              <div class="channel-name">Tangen VGS og Fagskolen Grimstad</div>
+              <div class="channel-target">Direkte tilgang til målgruppen din daglig</div>
+            </div>
+            <div class="channel-effort">
+              <span class="effort-badge high">Direkte tilgang</span>
+              <span class="potential">Gratis markedsføring</span>
+            </div>
+          </div>
+          <div class="channel-body">
+            <div class="channel-tips">
+              <div class="tip-item"><span class="tip-arrow">→</span>Heng opp en liten plakat i klasserommet eller på oppslagstavlen — en QR-kode til byggstudent.no</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Nevn plattformen i undervisningen: "Har dere sett på ressursene mine på nett?"</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Del lenken i læringsplattformen (Itslearning / Teams) til klassen</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Snakk med kolleger — de kan anbefale deg til sine studenter</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-label">30-dagers handlingsplan</div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">📅 Hva du gjør nå</div></div>
+          <div class="panel-body">
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-week">Dag 1–2</div>
+                <div class="tl-title">Lansering i ditt nettverk</div>
+                <div class="tl-tasks">
+                  <div class="tl-task">Publiser nettsiden på Vercel</div>
+                  <div class="tl-task">Send personlig melding til 20 studenter</div>
+                  <div class="tl-task">Del i lærerkollegiet</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot gold"></div>
+                <div class="tl-week">Dag 3–7</div>
+                <div class="tl-title">Første 5 betalende studenter</div>
+                <div class="tl-tasks">
+                  <div class="tl-task">Følg opp de som ikke svarte</div>
+                  <div class="tl-task">Book de første privatimene</div>
+                  <div class="tl-task">Be om tilbakemelding og anmeldelse</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-week">Uke 2–3</div>
+                <div class="tl-title">Opprett sosiale medier</div>
+                <div class="tl-tasks">
+                  <div class="tl-task">Facebook-gruppe for byggstudenter</div>
+                  <div class="tl-task">Instagram-konto @byggstudent</div>
+                  <div class="tl-task">Første innlegg med faginnhold</div>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot green"></div>
+                <div class="tl-week">Uke 4</div>
+                <div class="tl-title">Mål: 10 studenter ✓</div>
+                <div class="tl-tasks">
+                  <div class="tl-task">Ca. 1 590 kr/mnd + timer</div>
+                  <div class="tl-task">Samle testimonials fra studenter</div>
+                  <div class="tl-task">Klar for fase 2</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 2 -->
+  <div class="phase-panel" id="panel-fase2">
+    <div class="ibox orange">📢 <strong style="color:var(--accent2)">Mål uke 3–6:</strong> 20–30 studenter via sosiale medier og Facebooks grupper for norske ingeniørstudenter. Her er gullet!</div>
+    <div class="strat-grid">
+      <div>
+        <div class="sec-label">Sosiale medier — rangert etter effekt</div>
+
+        <div class="channel-card">
+          <div class="channel-head">
+            <div class="channel-icon fb">👥</div>
+            <div class="channel-info">
+              <div class="channel-name">Facebook-grupper</div>
+              <div class="channel-target">Ingeniørstudenter Norge, Bygg & Anlegg studenter, Fagskolen-grupper</div>
+            </div>
+            <div class="channel-effort">
+              <span class="effort-badge high">Høyest ROI</span>
+              <span class="potential">10–20 studenter/uke</span>
+            </div>
+          </div>
+          <div class="channel-body">
+            <div class="channel-tips">
+              <div class="tip-item"><span class="tip-arrow">→</span>Søk: "Ingeniørstudenter Norge", "Bygg og anlegg studenter", "Fagskolen bygg" — bli med og post nyttig innhold, ikke bare reklame</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Post én løst oppgave gratis som smakebit — "Her er løsningen på et typisk eksamensspørsmål i statikk"</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Svar på spørsmål i gruppen og nevn naturlig at du har mer ressurser</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Lag din EGEN Facebook-gruppe: "Statikk og konstruksjon — norske studenter" og inviter alle</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="channel-card">
+          <div class="channel-head">
+            <div class="channel-icon ig">📸</div>
+            <div class="channel-info">
+              <div class="channel-name">Instagram @byggstudent</div>
+              <div class="channel-target">Studenter 18–30 år — visuelt faginnhold</div>
+            </div>
+            <div class="channel-effort">
+              <span class="effort-badge med">Middels</span>
+              <span class="potential">Langsiktig vekst</span>
+            </div>
+          </div>
+          <div class="channel-body">
+            <div class="channel-tips">
+              <div class="tip-item"><span class="tip-arrow">→</span>Post enkle forklaringsbilder: "Hva er et bøyingsmoment? Forklart på 60 sekunder" — Reels fungerer best</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Bruk hashtags: #statikk #ingeniørstudent #fagskolen #byggingeniør #norskingeniør</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Behind-the-scenes: "Slik løser jeg en statikk-oppgave" — autentisk og lærerikt</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Story-polls: "Hva er vanskeligst — statikk eller betong?" — engasjement</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="channel-card">
+          <div class="channel-head">
+            <div class="channel-icon tg">💬</div>
+            <div class="channel-info">
+              <div class="channel-name">Reddit + Discord</div>
+              <div class="channel-target">r/norgesstudenter, r/engineering, Discord-servere for ingeniørstudenter</div>
+            </div>
+            <div class="channel-effort">
+              <span class="effort-badge low">Lav innsats</span>
+              <span class="potential">Nisjepublikum</span>
+            </div>
+          </div>
+          <div class="channel-body">
+            <div class="channel-tips">
+              <div class="tip-item"><span class="tip-arrow">→</span>Post nyttige ressurser på r/norgesstudenter — "Har laget gratis statikk-ressurser for ingeniørstudenter"</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Finn Discord-servere for NTNU, UiA, OsloMet ingeniørstudenter og del lenken</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-label">Eksamen-sesong = din gullgruve</div>
+        <div class="panel" style="margin-bottom:1rem">
+          <div class="panel-head"><div class="panel-title">📅 Norsk eksamenskalender</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:0.7rem">
+              <div style="display:flex;align-items:center;gap:10px;padding:0.65rem 0.85rem;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:8px">
+                <span style="font-size:1.2rem">🔥</span>
+                <div><div style="font-size:0.84rem;font-weight:600;color:var(--gold2)">Mai–Juni</div><div style="font-size:0.75rem;color:var(--ink2)">Våreksamen — høyeste etterspørsel. Dobbel markedsføring!</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:0.65rem 0.85rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px">
+                <span style="font-size:1.2rem">📘</span>
+                <div><div style="font-size:0.84rem;font-weight:600;color:var(--ink)">August–September</div><div style="font-size:0.75rem;color:var(--ink2)">Nytt semester starter — nye studenter søker ressurser</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:0.65rem 0.85rem;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);border-radius:8px">
+                <span style="font-size:1.2rem">❄️</span>
+                <div><div style="font-size:0.84rem;font-weight:600;color:var(--gold2)">November–Desember</div><div style="font-size:0.75rem;color:var(--ink2)">Høsteksamen — nest høyeste etterspørsel</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ibox blue">💡 Lag en <strong style="color:var(--blue)">eksamen-countdown</strong> på nettsiden: "X dager til eksamen — er du klar?" — øker konverteringen med 3x i eksamensperioden</div>
+        <div class="ibox green">✅ <strong style="color:var(--green)">Rabattkode</strong> i eksamensperioden: EKSAMEN25 gir 25% rabatt første måned — skriv det i Facebook-grupper</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 3 -->
+  <div class="phase-panel" id="panel-fase3">
+    <div class="ibox green">🌱 <strong style="color:var(--green)">Mål uke 7–12:</strong> 50+ studenter og passiv inntekt via samarbeid med skoler og affiliate-program.</div>
+    <div class="strat-grid">
+      <div>
+        <div class="sec-label">Skalerings-strategier</div>
+
+        <div class="channel-card">
+          <div class="channel-head">
+            <div class="channel-icon li">🤝</div>
+            <div class="channel-info">
+              <div class="channel-name">Skolesamarbeid — B2B</div>
+              <div class="channel-target">Fagskolen, Høyskolen, VGS — institusjonell lisens</div>
+            </div>
+            <div class="channel-effort">
+              <span class="effort-badge high">Høy verdi</span>
+              <span class="potential">10–50 studenter på én gang</span>
+            </div>
+          </div>
+          <div class="channel-body">
+            <div class="channel-tips">
+              <div class="tip-item"><span class="tip-arrow">→</span>Kontakt studieledere ved Fagskolen Grimstad og UiA — tilby klasselisens: 50 kr/student/mnd for hele klassen</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Lag et "Skoletilbud"-pakke: PDF-ressurser + 2 klasseromsøkter inkludert</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Du er allerede ansatt der — dette er ditt sterkeste konkurransefortrinn!</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="channel-card">
+          <div class="channel-head">
+            <div class="channel-icon ig">📣</div>
+            <div class="channel-info">
+              <div class="channel-name">Affiliate / Ambassadør-program</div>
+              <div class="channel-target">Eksisterende studenter anbefaler til venner</div>
+            </div>
+            <div class="channel-effort">
+              <span class="effort-badge high">Automatisk vekst</span>
+              <span class="potential">Eksponentiell vekst</span>
+            </div>
+          </div>
+          <div class="channel-body">
+            <div class="channel-tips">
+              <div class="tip-item"><span class="tip-arrow">→</span>Gi eksisterende studenter en unik rabattkode — de får 1 gratis måned for hvert nye medlem de sender</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>"Del med en venn og dere begge får 50% rabatt neste måned"</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Lag en enkel referral-lenke: byggstudent.no/?ref=OLE — lett å spore</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="channel-card">
+          <div class="channel-head">
+            <div class="channel-icon li">💼</div>
+            <div class="channel-info">
+              <div class="channel-name">LinkedIn — bygg ditt faglige brand</div>
+              <div class="channel-target">Ingeniørmiljø, lærere, skoler, studenter</div>
+            </div>
+            <div class="channel-effort">
+              <span class="effort-badge low">Langsiktig</span>
+              <span class="potential">Troverdighet + B2B</span>
+            </div>
+          </div>
+          <div class="channel-body">
+            <div class="channel-tips">
+              <div class="tip-item"><span class="tip-arrow">→</span>Post faglige innlegg om statikk og ingeniørutdanning — posisjonér deg som ekspert</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Koble med studieledere, lærere og ingeniører i Norge</div>
+              <div class="tip-item"><span class="tip-arrow">→</span>Del suksesshistorier: "En av mine studenter bestod eksamen etter 3 timer privatundervisning"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-label">Vekstprognose</div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">📈 90-dagers vekst</div></div>
+          <div class="panel-body" style="padding:0.75rem 1rem">
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-week">Uke 1–2</div>
+                <div class="tl-title">5 studenter · ~950 kr/mnd</div>
+                <div class="tl-desc" style="font-size:0.78rem;color:var(--ink2)">Nettverk og egne elever</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-week">Uke 3–6</div>
+                <div class="tl-title">20 studenter · ~4 780 kr/mnd</div>
+                <div class="tl-desc" style="font-size:0.78rem;color:var(--ink2)">Facebook-grupper + Instagram</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot gold"></div>
+                <div class="tl-week">Uke 7–10</div>
+                <div class="tl-title">35 studenter · ~8 650 kr/mnd</div>
+                <div class="tl-desc" style="font-size:0.78rem;color:var(--ink2)">Eksamensperiode + referrals</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot green"></div>
+                <div class="tl-week">Uke 11–12</div>
+                <div class="tl-title">50 studenter · ~12 500 kr/mnd</div>
+                <div class="tl-desc" style="font-size:0.78rem;color:var(--ink2)">Skolesamarbeid + affiliate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ibox gold">🏆 Med 50 studenter tjener du <strong style="color:var(--gold2)">150 000 kr/år</strong> ved siden av lærerstillingen — uten å jobbe full tid på det.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INNHOLDSMAL -->
+  <div class="phase-panel" id="panel-innhold">
+    <div class="ibox blue">✍️ Kopier og lim inn disse tekstene direkte — tilpass med ditt navn og lenke. Klar til bruk!</div>
+
+    <div class="strat-grid">
+      <div>
+        <div class="sec-label">Facebook-innlegg</div>
+
+        <div class="post-card">
+          <div class="post-platform">👥 Facebook-gruppe · Ingeniørstudenter Norge</div>
+          <div class="post-text">Hei alle! 👋
+
+Sliter du med statikk eller faghetslære? Du er ikke alene.
+
+Jeg er Claudio — byggingeniør og lærer ved Tangen VGS og Fagskolen i Grimstad. Jeg har løst hele fagboken i statikk og laget et komplett PDF-bibliotek med løsningsforslag.
+
+<strong>Nå lanserer jeg ByggStudent.no</strong> — en plattform der du får:
+✓ Alle løste oppgaver i PDF
+✓ Privattimer online (Teams/Zoom)
+✓ Eksamensforberedelse
+
+De første 5 som melder seg inn får 50% rabatt første måned. 🎓
+
+→ byggstudent.no</div>
+          <div class="post-tags"><span class="post-tag">#statikk</span><span class="post-tag">#ingeniørstudent</span><span class="post-tag">#fagskolen</span><span class="post-tag">#bygg</span></div>
+          <button class="copy-btn" onclick="copyText(this,'fb1')">📋 Kopier tekst</button>
+        </div>
+
+        <div class="post-card">
+          <div class="post-platform">💬 WhatsApp / SMS · Personlig melding</div>
+          <div class="post-text">Hei [navn]! 😊
+
+Vet ikke om du har hørt det, men jeg har nettopp lansert ByggStudent.no — en nettside der jeg samler alle løste statikk- og mekanikk-oppgaver i PDF.
+
+Du kan også booke privattime med meg direkte der — online via Teams.
+
+Første måned koster bare 89 kr (50% rabatt) hvis du melder deg inn denne uken.
+
+Sjekk det ut: byggstudent.no 🎓
+
+Beste hilsen, Claudio</div>
+          <button class="copy-btn" onclick="copyText(this,'sms1')">📋 Kopier tekst</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-label">Instagram / Reels-ideer</div>
+
+        <div class="post-card">
+          <div class="post-platform">📸 Instagram Caption · Faginnhold</div>
+          <div class="post-text">Sitter fast på bøyningsmoment? 🤔
+
+Her er den ene regelen du MÅ huske:
+
+M = F × d
+
+Moment = Kraft × Avstand fra dreiepunktet
+
+Øvingsoppgave i kommentarfeltet 👇
+
+💡 Vil du ha hele løsningsforslaget? Det ligger på byggstudent.no — link i bio!</div>
+          <div class="post-tags"><span class="post-tag">#statikk</span><span class="post-tag">#ingeniør</span><span class="post-tag">#eksamen</span><span class="post-tag">#bygg</span><span class="post-tag">#fagskolen</span></div>
+          <button class="copy-btn" onclick="copyText(this,'ig1')">📋 Kopier tekst</button>
+        </div>
+
+        <div class="post-card">
+          <div class="post-platform">📸 Instagram Caption · Lansering</div>
+          <div class="post-text">Jeg har brukt 2 år på å løse oppgaver fra fagboken. Nå gjør jeg dem tilgjengelig for deg. 📚
+
+ByggStudent.no er live — PDF-bibliotek, løsningsforslag og privattimer for ingeniørstudenter i Norge.
+
+Fra 79 kr/mnd. Ingen binding.
+
+Link i bio → byggstudent.no</div>
+          <div class="post-tags"><span class="post-tag">#byggstudent</span><span class="post-tag">#norgesstudenter</span><span class="post-tag">#privatundervisning</span></div>
+          <button class="copy-btn" onclick="copyText(this,'ig2')">📋 Kopier tekst</button>
+        </div>
+
+        <div class="sec-label" style="margin-top:1rem">E-post til skoler (B2B)</div>
+        <div class="post-card">
+          <div class="post-platform">📧 E-post · Studieleder / Rektor</div>
+          <div class="post-text">Emne: Digitale fagressurser for bygg-studenter — samarbeidstilbud
+
+Hei [navn],
+
+Jeg er Claudio Gomez, lærer ved [skole]. Jeg har utviklet en digital læringsplattform for ingeniørstudenter — ByggStudent.no.
+
+Plattformen inneholder:
+• Komplett PDF-bibliotek i statikk, mekanikk og betong
+• Løste oppgaver med forklaringer
+• Mulighet for online privattimer
+
+Jeg tilbyr klasselisens til 50 kr/student/mnd — vesentlig rimeligere enn individuelle abonnementer.
+
+Kan vi ta en kort prat om dette passer for studenter ved [skole]?
+
+Med vennlig hilsen,
+Claudio Gomez
+byggstudent.no</div>
+          <button class="copy-btn" onclick="copyText(this,'b2b1')">📋 Kopier tekst</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INNTEKTSPROGNOSE -->
+  <div class="phase-panel" id="panel-inntekt">
+    <div class="ibox gold">💰 Realistisk inntektsprognose basert på prisnivå (79/179/379 kr) og estimert fordeling av planer.</div>
+    <div class="panel">
+      <div class="panel-head"><div class="panel-title">📊 Inntektsprognose — 12 måneder</div></div>
+      <div class="panel-body">
+        <table class="income-table">
+          <thead><tr><th>Måned</th><th>Studenter</th><th>Abonnement</th><th>Privattimer</th><th>Totalt</th></tr></thead>
+          <tbody id="income-tbody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="strat-grid" style="margin-top:1rem">
+      <div class="ibox green">🎯 Ved slutten av år 1 med 80 studenter: estimert <strong style="color:var(--green)">~190 000 kr/år</strong> — ved siden av lærerlønnen din.</div>
+      <div class="ibox blue">📌 Forutsetninger: 50% Basis, 35% Student, 15% Pro. Privattimer: 6 timer/mnd á 400 kr.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Revenue calculator
+const PRICES = {basis:79, student:179, pro:379};
+function calcRevenue(val){
+  val = parseInt(val);
+  document.getElementById('slider-val').textContent = val + ' studenter';
+  const basis = Math.round(val*0.5);
+  const student = Math.round(val*0.35);
+  const pro = val - basis - student;
+  const sub = basis*PRICES.basis + student*PRICES.student + pro*PRICES.pro;
+  const timer = Math.round(val * 0.3) * 400;
+  const total = sub + timer;
+  document.getElementById('monthly-sub').textContent = sub.toLocaleString('no-NO') + ' kr';
+  document.getElementById('monthly-timer').textContent = timer.toLocaleString('no-NO') + ' kr';
+  document.getElementById('monthly-total').textContent = total.toLocaleString('no-NO') + ' kr';
+  const yearly = total * 12;
+  document.getElementById('rev-note').textContent =
+    `Med ${val} studenter tjener du ca. ${total.toLocaleString('no-NO')} kr/mnd — det er ${yearly.toLocaleString('no-NO')} kr/år ved siden av lærerjobben din 🎯`;
+}
+
+// Income table
+const months = ['Mai 25','Jun 25','Jul 25','Aug 25','Sep 25','Okt 25','Nov 25','Des 25','Jan 26','Feb 26','Mar 26','Apr 26'];
+const students = [5,10,15,20,30,35,40,50,55,65,72,80];
+function buildTable(){
+  const tbody = document.getElementById('income-tbody');
+  let html = '';
+  const maxTotal = 200000/12;
+  students.forEach((s,i)=>{
+    const basis = Math.round(s*0.5);
+    const student = Math.round(s*0.35);
+    const pro = s - basis - student;
+    const sub = basis*79 + student*179 + pro*379;
+    const timer = Math.round(s*0.3)*400;
+    const total = sub + timer;
+    const pct = Math.min(Math.round((total/maxTotal)*100),100);
+    html += `<tr>
+      <td><span class="income-month">${months[i]}</span></td>
+      <td>${s}</td>
+      <td>${sub.toLocaleString('no-NO')} kr</td>
+      <td>${timer.toLocaleString('no-NO')} kr</td>
+      <td><span class="income-val">${total.toLocaleString('no-NO')} kr</span><div class="income-bar"><div class="income-fill" style="width:${pct}%"></div></div></td>
+    </tr>`;
+  });
+  const totalYear = students.map((s,i)=>{
+    const b=Math.round(s*0.5),st=Math.round(s*0.35),p=s-b-st;
+    return (b*79+st*179+p*379)+Math.round(s*0.3)*400;
+  }).reduce((a,b)=>a+b,0);
+  html += `<tr><td colspan="2">Total år 1</td><td colspan="2"></td><td>${totalYear.toLocaleString('no-NO')} kr</td></tr>`;
+  tbody.innerHTML = html;
+  setTimeout(()=>document.querySelectorAll('.income-fill').forEach(b=>b.style.width=b.style.width),100);
+}
+buildTable();
+
+// Phase tabs
+function showPhase(id, btn){
+  document.querySelectorAll('.phase-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelectorAll('.phase-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Copy
+function copyText(btn, id){
+  const text = btn.closest('.post-card').querySelector('.post-text').innerText;
+  navigator.clipboard.writeText(text).then(()=>showToast('📋 Tekst kopiert!'));
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>

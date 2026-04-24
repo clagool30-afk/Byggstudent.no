@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ByggStudent.no — Publiseringsguide</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f2ec;--bg2:#ede9e1;--ink:#1a1a18;--ink2:#3d3d38;--muted:#8a8a80;
+  --accent:#c35a2a;--accent2:#e07a4a;--surface:#fff;--border:rgba(26,26,24,0.1);
+  --green:#15803d;--green-bg:rgba(21,128,61,0.08);--green-border:rgba(21,128,61,0.2);
+  --blue:#1d4ed8;--blue-bg:rgba(29,78,216,0.06);--blue-border:rgba(29,78,216,0.15);
+  --amber:#b45309;--amber-bg:rgba(180,83,9,0.07);--amber-border:rgba(180,83,9,0.2);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--ink)}
+
+nav{background:var(--ink);padding:0 2.5rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:white;letter-spacing:-0.02em}
+.nav-logo span{color:var(--accent2)}
+.nav-pages{display:flex;gap:0.5rem}
+.nav-page{font-size:0.75rem;color:rgba(255,255,255,0.45);text-decoration:none;padding:0.3rem 0.7rem;border-radius:5px;transition:all 0.2s}
+.nav-page:hover{color:white;background:rgba(255,255,255,0.07)}
+
+/* HERO */
+.hero{background:var(--ink);padding:4rem 2.5rem 5rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'PUBLISER';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-size:11rem;font-weight:800;color:rgba(255,255,255,0.02);pointer-events:none;white-space:nowrap;letter-spacing:-0.05em}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(195,90,42,0.15);border:1px solid rgba(195,90,42,0.3);color:var(--accent2);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;padding:0.35rem 1rem;border-radius:50px;margin-bottom:1.3rem}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;color:white;letter-spacing:-0.04em;line-height:1.1;margin-bottom:0.8rem}
+.hero h1 em{color:var(--accent2);font-style:normal}
+.hero-sub{font-size:0.95rem;color:rgba(255,255,255,0.45);max-width:480px;margin:0 auto 2rem;line-height:1.7;font-weight:300}
+.hero-time{display:inline-flex;align-items:center;gap:2rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:0.9rem 2rem}
+.time-item{text-align:center}
+.time-val{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:white;line-height:1}
+.time-label{font-size:0.7rem;color:rgba(255,255,255,0.35);margin-top:3px;letter-spacing:0.05em}
+.time-div{width:1px;background:rgba(255,255,255,0.1);height:30px}
+
+/* PROGRESS TRACKER */
+.tracker{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2.5rem;position:sticky;top:58px;z-index:90;overflow-x:auto}
+.tracker-inner{display:flex;align-items:center;gap:0;max-width:1100px;margin:0 auto;white-space:nowrap}
+.tracker-step{display:flex;align-items:center;gap:0;cursor:pointer}
+.tracker-item{display:flex;align-items:center;gap:8px;padding:1rem 1.2rem;border-bottom:2px solid transparent;transition:all 0.2s;font-size:0.82rem;color:var(--muted);font-weight:500}
+.tracker-item:hover{color:var(--ink)}
+.tracker-item.done{color:var(--green)}
+.tracker-item.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tracker-num{width:20px;height:20px;border-radius:50%;font-size:0.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Syne',sans-serif}
+.tracker-num.done{background:var(--green);color:white}
+.tracker-num.active{background:var(--accent);color:white}
+.tracker-num.pending{background:var(--bg2);color:var(--muted)}
+.tracker-arrow{color:var(--border);font-size:0.8rem;padding:0 0.2rem}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:3rem 2.5rem}
+
+/* SECTION HEADER */
+.sec-header{display:flex;align-items:flex-start;gap:1.2rem;margin-bottom:2rem}
+.sec-num{width:44px;height:44px;border-radius:10px;background:var(--accent);color:white;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--ink);letter-spacing:-0.03em;margin-bottom:0.3rem}
+.sec-sub{font-size:0.87rem;color:var(--muted);line-height:1.6}
+
+.step-section{margin-bottom:4rem;scroll-margin-top:120px}
+
+/* STEP CARDS */
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1rem}
+.step-card-head{padding:1rem 1.3rem;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s}
+.step-card-head:hover{background:var(--bg)}
+.step-badge{font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:50px}
+.step-badge.easy{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.step-badge.medium{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.step-badge.auto{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.step-title{font-family:'Syne',sans-serif;font-size:0.92rem;font-weight:700;flex:1;letter-spacing:-0.02em}
+.step-time{font-size:0.72rem;color:var(--muted);white-space:nowrap}
+.step-body{padding:1.3rem}
+
+/* INFO BOXES */
+.info-box{border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.9rem;font-size:0.83rem;line-height:1.6}
+.info-box.tip{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--ink2)}
+.info-box.tip::before{content:'💡 ';font-weight:700}
+.info-box.warn{background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--ink2)}
+.info-box.warn::before{content:'⚠️ ';font-weight:700}
+.info-box.success{background:var(--green-bg);border:1px solid var(--green-border);color:var(--ink2)}
+.info-box.success::before{content:'✅ ';font-weight:700}
+
+/* STEPS LIST */
+.steps-list{display:flex;flex-direction:column;gap:0}
+.sl-item{display:flex;gap:14px;padding:0.9rem 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+.sl-item:last-child{border-bottom:none}
+.sl-num{width:24px;height:24px;border-radius:50%;background:var(--accent);color:white;font-size:0.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:'Syne',sans-serif}
+.sl-content{flex:1}
+.sl-title{font-size:0.87rem;font-weight:600;color:var(--ink);margin-bottom:0.2rem}
+.sl-desc{font-size:0.8rem;color:var(--muted);line-height:1.55}
+.sl-img{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;margin-top:0.5rem;font-size:0.75rem;font-family:monospace;color:var(--ink2);word-break:break-all}
+.sl-img.green{background:var(--green-bg);border-color:var(--green-border);font-family:'Instrument Sans',sans-serif;font-size:0.78rem;color:var(--green)}
+.sl-img.orange{background:rgba(195,90,42,0.06);border-color:rgba(195,90,42,0.2);font-family:'Instrument Sans',sans-serif;font-size:0.78rem;color:var(--accent)}
+
+/* CODE BLOCK */
+.code{background:var(--ink);color:#e0e0da;border-radius:10px;padding:1.1rem 1.2rem;font-family:monospace;font-size:0.75rem;line-height:1.7;overflow-x:auto;margin:0.6rem 0}
+.code .c{color:#e07a4a}
+.code .s{color:#86d9a0}
+.code .k{color:#7bb8f5}
+
+/* DOMAIN TABLE */
+.domain-table{width:100%;border-collapse:collapse;font-size:0.84rem}
+.domain-table th{text-align:left;padding:0.55rem 0.85rem;font-size:0.68rem;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
+.domain-table td{padding:0.7rem 0.85rem;border-bottom:1px solid rgba(0,0,0,0.05);vertical-align:middle}
+.domain-table tr:last-child td{border-bottom:none}
+.domain-table tr:hover td{background:var(--bg)}
+.rec-star{color:var(--accent);font-weight:700}
+.price-cell{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem}
+.price-free{color:var(--green)}
+.price-low{color:var(--accent)}
+
+/* COST SUMMARY */
+.cost-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.cost-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem;text-align:center}
+.cost-icon{font-size:1.4rem;margin-bottom:0.4rem}
+.cost-name{font-size:0.75rem;font-weight:600;color:var(--ink);margin-bottom:0.2rem}
+.cost-price{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--green)}
+.cost-note{font-size:0.68rem;color:var(--muted);margin-top:2px}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:0.5rem}
+.check-item{display:flex;align-items:center;gap:10px;padding:0.65rem 0.85rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s}
+.check-item:hover{border-color:rgba(195,90,42,0.25)}
+.check-item.checked{background:var(--green-bg);border-color:var(--green-border)}
+.check-box{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all 0.15s}
+.check-item.checked .check-box{background:var(--green);border-color:var(--green);color:white}
+.check-text{font-size:0.83rem;color:var(--ink2)}
+.check-item.checked .check-text{color:var(--green);text-decoration:line-through;opacity:0.7}
+
+/* VERCEL VISUAL */
+.vercel-visual{background:var(--ink);border-radius:14px;padding:1.5rem;margin:0.75rem 0;position:relative;overflow:hidden}
+.vercel-visual::before{content:'▲';position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:6rem;color:rgba(255,255,255,0.03);font-family:monospace}
+.vercel-url{font-family:monospace;font-size:0.8rem;color:rgba(255,255,255,0.4);margin-bottom:0.5rem}
+.vercel-domain{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:white;letter-spacing:-0.03em}
+.vercel-domain span{color:var(--accent2)}
+.vercel-status{display:inline-flex;align-items:center;gap:6px;background:rgba(21,128,61,0.15);border:1px solid rgba(21,128,61,0.3);color:#4ade80;font-size:0.72rem;font-weight:600;padding:0.25rem 0.7rem;border-radius:50px;margin-top:0.6rem}
+.vercel-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1rem}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--ink);color:white;padding:0.8rem 1.2rem;border-radius:10px;font-size:0.84rem;font-weight:500;z-index:1000;transform:translateY(70px);opacity:0;transition:all 0.3s;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* FINAL BANNER */
+.final-banner{background:var(--ink);border-radius:20px;padding:3rem;text-align:center;margin-top:3rem;position:relative;overflow:hidden}
+.final-banner::before{content:'🚀';position:absolute;right:2rem;top:50%;transform:translateY(-50%);font-size:8rem;opacity:0.05}
+.final-banner h2{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:white;letter-spacing:-0.04em;margin-bottom:0.75rem}
+.final-banner p{font-size:0.9rem;color:rgba(255,255,255,0.5);margin-bottom:2rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7}
+.final-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.fbtn{padding:0.8rem 1.8rem;border-radius:9px;font-size:0.88rem;font-weight:600;font-family:'Instrument Sans',sans-serif;cursor:pointer;text-decoration:none;transition:all 0.2s;display:inline-block}
+.fbtn-fill{background:var(--accent);color:white;border:none}
+.fbtn-fill:hover{background:var(--accent2);transform:translateY(-2px)}
+.fbtn-outline{background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7)}
+.fbtn-outline:hover{border-color:rgba(255,255,255,0.5);color:white}
+
+@media(max-width:768px){.cost-grid{grid-template-columns:1fr 1fr}.grid-2{grid-template-columns:1fr}.hero-time{gap:1rem;padding:0.8rem 1.2rem}.final-btns{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Bygg<span>Student</span>.no</div>
+  <div class="nav-pages">
+    <a class="nav-page" href="ByggStudent_no.html">Nettside</a>
+    <a class="nav-page" href="ByggStudent_Admin.html">Admin</a>
+    <a class="nav-page" href="ByggStudent_Dashboard.html">Dashboard</a>
+    <a class="nav-page" href="ByggStudent_EmailSystem.html">E-post</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">🚀 Steg-for-steg publiseringsguide</div>
+  <h1>Fra filer på PC<br>til <em>live nettside</em></h1>
+  <p class="hero-sub">Følg disse stegene og ByggStudent.no er live på internett — gratis hosting, eget domene og HTTPS inkludert.</p>
+  <div class="hero-time">
+    <div class="time-item"><div class="time-val">10</div><div class="time-label">Minutter totalt</div></div>
+    <div class="time-div"></div>
+    <div class="time-item"><div class="time-val">0</div><div class="time-label">Kr hosting/mnd</div></div>
+    <div class="time-div"></div>
+    <div class="time-item"><div class="time-val">5</div><div class="time-label">Steg å følge</div></div>
+    <div class="time-div"></div>
+    <div class="time-item"><div class="time-val">✓</div><div class="time-label">HTTPS inkludert</div></div>
+  </div>
+</div>
+
+<!-- TRACKER -->
+<div class="tracker">
+  <div class="tracker-inner">
+    <div class="tracker-step" onclick="scrollTo('steg1')">
+      <div class="tracker-item active"><div class="tracker-num active">1</div>GitHub</div>
+    </div>
+    <div class="tracker-arrow">›</div>
+    <div class="tracker-step" onclick="scrollTo('steg2')">
+      <div class="tracker-item"><div class="tracker-num pending">2</div>Vercel</div>
+    </div>
+    <div class="tracker-arrow">›</div>
+    <div class="tracker-step" onclick="scrollTo('steg3')">
+      <div class="tracker-item"><div class="tracker-num pending">3</div>Domene</div>
+    </div>
+    <div class="tracker-arrow">›</div>
+    <div class="tracker-step" onclick="scrollTo('steg4')">
+      <div class="tracker-item"><div class="tracker-num pending">4</div>EmailJS</div>
+    </div>
+    <div class="tracker-arrow">›</div>
+    <div class="tracker-step" onclick="scrollTo('steg5')">
+      <div class="tracker-item"><div class="tracker-num pending">5</div>Live ✓</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KOSTNADER -->
+  <div style="margin-bottom:1rem;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase">Totalkostnad for hele plattformen</div>
+  <div class="cost-grid">
+    <div class="cost-item"><div class="cost-icon">▲</div><div class="cost-name">Vercel Hosting</div><div class="cost-price">0 kr</div><div class="cost-note">Gratis for alltid</div></div>
+    <div class="cost-item"><div class="cost-icon">🌐</div><div class="cost-name">Domene (.no)</div><div class="cost-price" style="color:var(--accent)">~150 kr/år</div><div class="cost-note">Ca. 12 kr/mnd</div></div>
+    <div class="cost-item"><div class="cost-icon">📧</div><div class="cost-name">EmailJS</div><div class="cost-price">0 kr</div><div class="cost-note">200 e-poster/mnd</div></div>
+    <div class="cost-item"><div class="cost-icon">☁️</div><div class="cost-name">Google Drive</div><div class="cost-price">0 kr</div><div class="cost-note">15 GB inkludert</div></div>
+  </div>
+  <div class="info-box success" style="margin-bottom:3rem">Total månedskostnad: ca. <strong>12 kr/mnd</strong> for domenet. Alt annet er gratis. Du tjener inn det på første student samme dag!</div>
+
+  <!-- STEG 1: GITHUB -->
+  <div class="step-section" id="steg1">
+    <div class="sec-header">
+      <div class="sec-num">1</div>
+      <div><div class="sec-title">Last opp filene til GitHub</div><div class="sec-sub">GitHub er der filene dine lagres — som en sky-mappe for kode. Gratis og tar 3 minutter.</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="step-card">
+        <div class="step-card-head">
+          <span class="step-badge easy">Enkelt</span>
+          <div class="step-title">Opprett GitHub-konto og nytt prosjekt</div>
+          <div class="step-time">~2 min</div>
+        </div>
+        <div class="step-body">
+          <div class="steps-list">
+            <div class="sl-item">
+              <div class="sl-num">1</div>
+              <div class="sl-content">
+                <div class="sl-title">Gå til github.com og klikk "Sign up"</div>
+                <div class="sl-desc">Bruk din Outlook-e-post. Velg gratis plan (Free).</div>
+              </div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-num">2</div>
+              <div class="sl-content">
+                <div class="sl-title">Klikk "New repository" (grønn knapp)</div>
+                <div class="sl-desc">Gi det navnet <strong>byggstudent-no</strong>. Sett til Public. Klikk "Create repository".</div>
+              </div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-num">3</div>
+              <div class="sl-content">
+                <div class="sl-title">Last opp filene dine</div>
+                <div class="sl-desc">Klikk "uploading an existing file" → dra alle 4 HTML-filene inn → klikk "Commit changes".</div>
+                <div class="sl-img green">✓ index.html · admin.html · dashboard.html · email-system.html</div>
+              </div>
+            </div>
+          </div>
+          <div class="info-box tip" style="margin-top:0.75rem">Du trenger ikke installere noe. Alt skjer i nettleseren på github.com</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="step-card" style="margin-bottom:1rem">
+          <div class="step-card-head">
+            <span class="step-badge easy">Tips</span>
+            <div class="step-title">Filstruktur i GitHub</div>
+          </div>
+          <div class="step-body">
+            <div style="background:var(--ink);border-radius:10px;padding:1.1rem;font-family:monospace;font-size:0.77rem;line-height:1.8;color:#e0e0da">
+              <span style="color:#7bb8f5">📁</span> byggstudent-no/<br>
+              &nbsp;&nbsp;<span style="color:#86d9a0">📄</span> index.html &nbsp;&nbsp;&nbsp;<span style="color:#5a5a55">← Forsiden</span><br>
+              &nbsp;&nbsp;<span style="color:#86d9a0">📄</span> dashboard.html &nbsp;<span style="color:#5a5a55">← Studentportal</span><br>
+              &nbsp;&nbsp;<span style="color:#86d9a0">📄</span> admin.html &nbsp;&nbsp;&nbsp;<span style="color:#5a5a55">← Admin-panel</span><br>
+              &nbsp;&nbsp;<span style="color:#e07a4a">📁</span> pdf/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#5a5a55">← (valgfri lokal mappe)</span><br>
+              &nbsp;&nbsp;<span style="color:#86d9a0">📄</span> README.md &nbsp;&nbsp;&nbsp;<span style="color:#5a5a55">← Beskrivelse</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-box warn">Ikke last opp PDF-filer til GitHub — bruk Google Drive til det. GitHub er kun for HTML/CSS/JS-filer.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 2: VERCEL -->
+  <div class="step-section" id="steg2">
+    <div class="sec-header">
+      <div class="sec-num">2</div>
+      <div><div class="sec-title">Publiser på Vercel — gratis hosting</div><div class="sec-sub">Vercel kobler seg til GitHub og publiserer nettsiden din automatisk. Hver gang du oppdaterer en fil på GitHub, oppdateres nettsiden automatisk.</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="step-card">
+        <div class="step-card-head">
+          <span class="step-badge easy">Enkelt</span>
+          <div class="step-title">Deploy til Vercel på 3 minutter</div>
+          <div class="step-time">~3 min</div>
+        </div>
+        <div class="step-body">
+          <div class="steps-list">
+            <div class="sl-item">
+              <div class="sl-num">1</div>
+              <div class="sl-content">
+                <div class="sl-title">Gå til vercel.com og klikk "Sign Up"</div>
+                <div class="sl-desc">Velg "Continue with GitHub" — det kobler kontoene automatisk.</div>
+              </div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-num">2</div>
+              <div class="sl-content">
+                <div class="sl-title">Klikk "Add New → Project"</div>
+                <div class="sl-desc">Du ser GitHub-repoene dine. Klikk "Import" ved siden av <strong>byggstudent-no</strong>.</div>
+              </div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-num">3</div>
+              <div class="sl-content">
+                <div class="sl-title">Klikk "Deploy" — ikke endre noe</div>
+                <div class="sl-desc">Vercel oppdager filene automatisk. La alle innstillinger stå og klikk Deploy.</div>
+              </div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-num">4</div>
+              <div class="sl-content">
+                <div class="sl-title">Nettsiden er live! 🎉</div>
+                <div class="sl-desc">Du får en lenke som <strong>byggstudent-no.vercel.app</strong> — del den med noen og test!</div>
+                <div class="sl-img green">✓ https://byggstudent-no.vercel.app — LIVE og klar!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="vercel-visual">
+          <div class="vercel-url">https://</div>
+          <div class="vercel-domain">byggstudent<span>-no</span>.vercel.app</div>
+          <div class="vercel-status"><div class="vercel-dot"></div>Production — Ready</div>
+          <div style="margin-top:1.2rem;display:flex;flex-direction:column;gap:0.5rem">
+            <div style="background:rgba(255,255,255,0.05);border-radius:6px;padding:0.5rem 0.75rem;font-size:0.75rem;color:rgba(255,255,255,0.5);font-family:monospace">▲ Building... ████████░░ 80%</div>
+            <div style="background:rgba(21,128,61,0.15);border:1px solid rgba(21,128,61,0.3);border-radius:6px;padding:0.5rem 0.75rem;font-size:0.75rem;color:#4ade80;font-family:monospace">✓ Build completed in 12s</div>
+            <div style="background:rgba(21,128,61,0.15);border:1px solid rgba(21,128,61,0.3);border-radius:6px;padding:0.5rem 0.75rem;font-size:0.75rem;color:#4ade80;font-family:monospace">✓ HTTPS aktivisert automatisk</div>
+            <div style="background:rgba(21,128,61,0.15);border:1px solid rgba(21,128,61,0.3);border-radius:6px;padding:0.5rem 0.75rem;font-size:0.75rem;color:#4ade80;font-family:monospace">✓ CDN distribusjon — rask over hele verden</div>
+          </div>
+        </div>
+        <div class="info-box success" style="margin-top:0.75rem">Automatisk oppdatering — hver gang du laster opp ny fil til GitHub, oppdateres nettsiden innen 30 sekunder!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 3: DOMENE -->
+  <div class="step-section" id="steg3">
+    <div class="sec-header">
+      <div class="sec-num">3</div>
+      <div><div class="sec-title">Koble til eget domene</div><div class="sec-sub">Bytt ut .vercel.app med ditt eget .no-domene. Anbefaler Domeneshop — norsk leverandør med enkel oppsett.</div></div>
+    </div>
+
+    <div class="step-card" style="margin-bottom:1rem">
+      <div class="step-card-head">
+        <span class="step-badge easy">Enkelt</span>
+        <div class="step-title">Kjøp domene og koble til Vercel</div>
+        <div class="step-time">~5 min</div>
+      </div>
+      <div class="step-body">
+        <div class="grid-2" style="margin-bottom:1rem">
+          <div>
+            <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">Anbefalte domene-leverandører</div>
+            <table class="domain-table">
+              <thead><tr><th>Leverandør</th><th>.no-domene</th><th>Enkelt?</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Domeneshop</strong> <span class="rec-star">★ Best</span></td><td class="price-cell price-low">~149 kr/år</td><td>✓ Meget enkelt</td></tr>
+                <tr><td><strong>One.com</strong></td><td class="price-cell price-low">~199 kr/år</td><td>✓ Enkelt</td></tr>
+                <tr><td><strong>Namecheap</strong></td><td class="price-cell price-low">~120 kr/år</td><td>OK</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">Domene-forslag</div>
+            <div style="display:flex;flex-direction:column;gap:0.4rem">
+              <div class="sl-img orange">byggstudent.no &nbsp;&nbsp;← Anbefalt ✓</div>
+              <div class="sl-img" style="background:var(--bg2)">statikk.no</div>
+              <div class="sl-img" style="background:var(--bg2)">ingeniorfaget.no</div>
+              <div class="sl-img" style="background:var(--bg2)">byggstudie.no</div>
+            </div>
+          </div>
+        </div>
+        <div class="steps-list">
+          <div class="sl-item">
+            <div class="sl-num">1</div>
+            <div class="sl-content">
+              <div class="sl-title">Kjøp domenet på domeneshop.no</div>
+              <div class="sl-desc">Søk etter <strong>byggstudent.no</strong> → legg i handlekurv → betal med kort. Ca. 149 kr/år.</div>
+            </div>
+          </div>
+          <div class="sl-item">
+            <div class="sl-num">2</div>
+            <div class="sl-content">
+              <div class="sl-title">I Vercel: gå til Settings → Domains → Add Domain</div>
+              <div class="sl-desc">Skriv inn <strong>byggstudent.no</strong> og klikk Add. Vercel viser deg to DNS-verdier du skal kopiere.</div>
+            </div>
+          </div>
+          <div class="sl-item">
+            <div class="sl-num">3</div>
+            <div class="sl-content">
+              <div class="sl-title">I Domeneshop: gå til DNS-innstillinger</div>
+              <div class="sl-desc">Logg inn → Mine domener → byggstudent.no → DNS. Legg til de to verdiene fra Vercel:</div>
+              <div class="sl-img"><span style="color:#e07a4a">Type:</span> A &nbsp;&nbsp;<span style="color:#86d9a0">Verdi:</span> 76.76.21.21<br><span style="color:#e07a4a">Type:</span> CNAME &nbsp;<span style="color:#86d9a0">Verdi:</span> cname.vercel-dns.com</div>
+            </div>
+          </div>
+          <div class="sl-item">
+            <div class="sl-num">4</div>
+            <div class="sl-content">
+              <div class="sl-title">Vent 10–30 minutter</div>
+              <div class="sl-desc">DNS-endringer tar litt tid å spre seg. Etter det er <strong>byggstudent.no</strong> live med HTTPS!</div>
+              <div class="sl-img green">✓ https://byggstudent.no — Ditt eget domene er aktivt!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 4: EMAILJS -->
+  <div class="step-section" id="steg4">
+    <div class="sec-header">
+      <div class="sec-num">4</div>
+      <div><div class="sec-title">Aktiver automatiske e-poster</div><div class="sec-sub">Koble EmailJS til nettsiden så du mottar varsler og studenten får velkomst-e-post automatisk.</div></div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-head">
+        <span class="step-badge easy">Enkelt</span>
+        <div class="step-title">EmailJS oppsett — 5 minutter</div>
+        <div class="step-time">~5 min</div>
+      </div>
+      <div class="step-body">
+        <div class="grid-2">
+          <div class="steps-list">
+            <div class="sl-item">
+              <div class="sl-num">1</div>
+              <div class="sl-content">
+                <div class="sl-title">Opprett konto på emailjs.com</div>
+                <div class="sl-desc">Gratis — logg inn med Google eller e-post</div>
+              </div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-num">2</div>
+              <div class="sl-content">
+                <div class="sl-title">Email Services → Add New Service → Gmail/Outlook</div>
+                <div class="sl-desc">Koble til din Outlook-konto. Gi tjenesten navn: <strong>byggstudent</strong></div>
+              </div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-num">3</div>
+              <div class="sl-content">
+                <div class="sl-title">Email Templates → Create New Template</div>
+                <div class="sl-desc">Lag to maler: <strong>template_student</strong> (velkomst) og <strong>template_admin</strong> (varsel til deg). Kopier teksten fra e-postsystem-siden.</div>
+              </div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-num">4</div>
+              <div class="sl-content">
+                <div class="sl-title">Kopier nøklene dine</div>
+                <div class="sl-desc">Account → API Keys → kopier <strong>Public Key</strong>. Finn også Service ID og Template IDs fra dashbordet.</div>
+              </div>
+            </div>
+            <div class="sl-item">
+              <div class="sl-num">5</div>
+              <div class="sl-content">
+                <div class="sl-title">Oppdater index.html med nøklene dine</div>
+                <div class="sl-desc">Finn linjen med <code style="background:var(--bg2);padding:1px 5px;border-radius:3px;font-size:0.72rem">DIN_PUBLIC_KEY</code> i koden og bytt ut med din faktiske nøkkel. Last opp til GitHub → automatisk oppdatering!</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="code"><span class="c">// Lim inn i &lt;head&gt; på index.html</span>
+&lt;script src=<span class="s">"https://cdn.emailjs.com/
+  dist/email.min.js"</span>&gt;&lt;/script&gt;
+&lt;script&gt;
+  emailjs.init(<span class="s">"abc123XYZ"</span>);
+  <span class="c">// ↑ Din Public Key fra EmailJS</span>
+&lt;/script&gt;
+
+<span class="c">// I sendRegistration() funksjonen:</span>
+emailjs.send(
+  <span class="s">"service_byggstudent"</span>, <span class="c">// Service ID</span>
+  <span class="s">"template_student"</span>,   <span class="c">// Til student</span>
+  { navn, epost, plan }
+);
+emailjs.send(
+  <span class="s">"service_byggstudent"</span>,
+  <span class="s">"template_admin"</span>,    <span class="c">// Til deg</span>
+  { navn, epost, plan, tid }
+);</div>
+            <div class="info-box success">Ferdig! Test ved å registrere deg selv med din egen e-post.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 5: SJEKKLISTE -->
+  <div class="step-section" id="steg5">
+    <div class="sec-header">
+      <div class="sec-num">5</div>
+      <div><div class="sec-title">Sjekkliste før lansering</div><div class="sec-sub">Gå gjennom alle punktene og kryss av. Når alle er grønne — er du klar til å dele lenken!</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">Teknisk</div>
+        <div class="checklist" id="checklist-tech">
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">Filene er lastet opp til GitHub</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">Vercel deployment er vellykket (grønt lys)</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">Domenet er kjøpt og koblet til Vercel</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">https:// fungerer (henger-ikon vises ikke)</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">EmailJS er koblet til og testet</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">Du mottar e-post ved test-registrering</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">Google Drive-mappen er satt opp med PDF-ene</span></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">Innhold og betaling</div>
+        <div class="checklist">
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">PayPal Business-konto opprettet</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">Vipps for bedrift aktivert</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">PDF-filene er lastet opp i Google Drive</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">Alle priser er riktige (79/179/379 kr)</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">Admin-panelet fungerer og viser varsler</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">Test en hel booking fra start til slutt</span></div>
+          <div class="check-item" onclick="toggle(this)"><div class="check-box"></div><span class="check-text">Del lenken med første student! 🚀</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL BANNER -->
+  <div class="final-banner">
+    <h2>ByggStudent.no er klar! 🚀</h2>
+    <p>Du har nå en komplett, profesjonell plattform for ingeniørstudenter — med PDF-bibliotek, booking av privattimer, automatiske e-poster og et admin-panel som gir deg full kontroll.</p>
+    <div class="final-btns">
+      <a class="fbtn fbtn-fill" href="ByggStudent_no.html">Se forsiden →</a>
+      <a class="fbtn fbtn-outline" href="ByggStudent_Admin.html">Åpne admin-panel</a>
+      <a class="fbtn fbtn-outline" href="ByggStudent_Dashboard.html">Se studentvisning</a>
+    </div>
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08);font-size:0.78rem;color:rgba(255,255,255,0.25)">
+      Laget av Claude · ByggStudent.no · Claudio Gomez · Grimstad 2025
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function scrollTo(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.tracker-item').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tracker-num').forEach(n=>{if(n.classList.contains('active'))n.classList.remove('active')});
+}
+function toggle(el){
+  el.classList.toggle('checked');
+  if(el.classList.contains('checked')) el.querySelector('.check-box').textContent='✓';
+  else el.querySelector('.check-box').textContent='';
+  const total = document.querySelectorAll('.check-item').length;
+  const done = document.querySelectorAll('.check-item.checked').length;
+  if(done===total) showToast('🎉 Alt er klart — ByggStudent.no er live!');
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+</script>
+</body>
+</html>

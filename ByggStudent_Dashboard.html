@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ByggStudent.no — Min side</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f2ec;
+  --bg2:#ede9e1;
+  --ink:#1a1a18;
+  --ink2:#3d3d38;
+  --muted:#8a8a80;
+  --accent:#c35a2a;
+  --accent2:#e07a4a;
+  --surface:#ffffff;
+  --border:rgba(26,26,24,0.1);
+  --sidebar:220px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh;overflow-x:hidden}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:var(--sidebar);background:var(--ink);min-height:100vh;position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100;transition:transform 0.3s}
+.sidebar-logo{padding:1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px}
+.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:800;color:white;flex-shrink:0}
+.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;color:white;letter-spacing:-0.02em}
+.logo-text span{color:var(--accent2)}
+
+.sidebar-user{padding:1rem 1.2rem;border-bottom:1px solid rgba(255,255,255,0.08)}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:rgba(195,90,42,0.25);border:2px solid rgba(195,90,42,0.4);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--accent2);margin-bottom:0.5rem}
+.user-name{font-size:0.83rem;font-weight:600;color:white}
+.user-plan{display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;background:rgba(195,90,42,0.2);color:var(--accent2);padding:0.2rem 0.5rem;border-radius:50px;margin-top:3px;font-weight:500}
+
+.sidebar-nav{flex:1;padding:1rem 0.6rem}
+.nav-section{font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);font-weight:600;padding:0.8rem 0.6rem 0.4rem}
+.nav-item{display:flex;align-items:center;gap:10px;padding:0.6rem 0.75rem;border-radius:8px;color:rgba(255,255,255,0.55);font-size:0.85rem;cursor:pointer;transition:all 0.2s;margin-bottom:2px;text-decoration:none}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.9)}
+.nav-item.active{background:rgba(195,90,42,0.2);color:white}
+.nav-item.active .nav-icon{color:var(--accent2)}
+.nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--accent);color:white;font-size:0.65rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:50px}
+
+.sidebar-bottom{padding:1rem 1.2rem;border-top:1px solid rgba(255,255,255,0.08)}
+.upgrade-box{background:rgba(195,90,42,0.12);border:1px solid rgba(195,90,42,0.25);border-radius:10px;padding:0.9rem;margin-bottom:0.75rem}
+.upgrade-box p{font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5;margin-bottom:0.6rem}
+.upgrade-btn{width:100%;background:var(--accent);color:white;border:none;border-radius:6px;padding:0.5rem;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:background 0.2s}
+.upgrade-btn:hover{background:var(--accent2)}
+.logout-btn{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.35);font-size:0.82rem;cursor:pointer;transition:color 0.2s;background:none;border:none;font-family:'Instrument Sans',sans-serif;padding:0}
+.logout-btn:hover{color:rgba(255,255,255,0.7)}
+
+/* ─── MAIN ─── */
+.main{margin-left:var(--sidebar);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;letter-spacing:-0.02em}
+.topbar-actions{display:flex;align-items:center;gap:0.75rem}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.8rem;font-size:0.83rem;color:var(--muted);cursor:text;transition:border-color 0.2s}
+.search-box:focus-within{border-color:var(--accent)}
+.search-box input{background:none;border:none;outline:none;font-size:0.83rem;color:var(--ink);font-family:'Instrument Sans',sans-serif;width:160px}
+.search-box input::placeholder{color:var(--muted)}
+.notif-btn{width:36px;height:36px;border-radius:8px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;position:relative;transition:all 0.2s}
+.notif-btn:hover{border-color:var(--accent)}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--surface)}
+
+.content{padding:2rem;flex:1}
+
+/* ─── WELCOME BANNER ─── */
+.welcome-banner{background:var(--ink);border-radius:16px;padding:1.8rem 2rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;position:relative;overflow:hidden}
+.welcome-banner::before{content:'STATIKK';position:absolute;right:-1rem;top:-0.5rem;font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:rgba(255,255,255,0.03);pointer-events:none;letter-spacing:-0.05em}
+.welcome-text h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:white;letter-spacing:-0.03em;margin-bottom:0.3rem}
+.welcome-text p{font-size:0.85rem;color:rgba(255,255,255,0.5);font-weight:300}
+.welcome-text p span{color:var(--accent2);font-weight:500}
+.banner-btn{background:var(--accent);color:white;border:none;padding:0.6rem 1.3rem;border-radius:8px;font-size:0.83rem;font-weight:600;cursor:pointer;font-family:'Instrument Sans',sans-serif;white-space:nowrap;transition:all 0.2s;text-decoration:none}
+.banner-btn:hover{background:var(--accent2)}
+
+/* ─── STATS ROW ─── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem}
+.stat-label{font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;font-weight:500;margin-bottom:0.4rem}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--ink);line-height:1}
+.stat-val span{color:var(--accent)}
+.stat-sub{font-size:0.75rem;color:var(--muted);margin-top:3px}
+
+/* ─── GRID LAYOUT ─── */
+.grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.4rem}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.card-title{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:-0.02em}
+.card-link{font-size:0.78rem;color:var(--accent);text-decoration:none;font-weight:500}
+.card-link:hover{text-decoration:underline}
+
+/* ─── PDF LIBRARY ─── */
+.pdf-filters{display:flex;gap:0.5rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.filter-btn{background:var(--bg);border:1px solid var(--border);border-radius:50px;padding:0.35rem 0.85rem;font-size:0.78rem;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:'Instrument Sans',sans-serif;color:var(--ink2)}
+.filter-btn:hover,.filter-btn.active{background:var(--accent);border-color:var(--accent);color:white}
+
+.pdf-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem}
+.pdf-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;cursor:pointer;transition:all 0.25s;position:relative}
+.pdf-card:hover{border-color:rgba(195,90,42,0.35);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.06)}
+.pdf-card.locked{opacity:0.6;cursor:default}
+.pdf-card.locked:hover{transform:none;border-color:var(--border);box-shadow:none}
+.pdf-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.7rem}
+.pdf-thumb{width:38px;height:48px;background:rgba(195,90,42,0.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid rgba(195,90,42,0.15)}
+.pdf-status{font-size:0.68rem;font-weight:600;padding:0.2rem 0.55rem;border-radius:50px}
+.pdf-status.free{background:rgba(34,197,94,0.1);color:#16a34a}
+.pdf-status.member{background:rgba(195,90,42,0.1);color:var(--accent)}
+.pdf-status.locked{background:rgba(0,0,0,0.06);color:var(--muted)}
+.pdf-card h4{font-size:0.83rem;font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:0.35rem}
+.pdf-card-meta{display:flex;align-items:center;gap:0.6rem;font-size:0.72rem;color:var(--muted)}
+.pdf-dot{width:3px;height:3px;border-radius:50%;background:var(--muted)}
+.lock-overlay{position:absolute;inset:0;border-radius:10px;background:rgba(245,242,236,0.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;backdrop-filter:blur(2px)}
+.lock-overlay span{font-size:1.3rem}
+.lock-overlay p{font-size:0.72rem;color:var(--ink2);font-weight:600;text-align:center}
+
+/* ─── PDF VIEWER MODAL ─── */
+.viewer-overlay{position:fixed;inset:0;background:rgba(15,15,15,0.85);z-index:500;display:none;flex-direction:column;backdrop-filter:blur(4px)}
+.viewer-overlay.open{display:flex}
+.viewer-bar{background:var(--ink);padding:0 1.5rem;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.viewer-title{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:white}
+.viewer-controls{display:flex;align-items:center;gap:0.75rem}
+.vbtn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:white;padding:0.35rem 0.85rem;border-radius:6px;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.2s}
+.vbtn:hover{background:rgba(255,255,255,0.15)}
+.vbtn.close-btn{background:rgba(195,90,42,0.2);border-color:rgba(195,90,42,0.4);color:var(--accent2)}
+.viewer-frame{flex:1;background:#2a2a2a;display:flex;align-items:center;justify-content:center}
+.viewer-frame iframe{width:100%;height:100%;border:none}
+.viewer-placeholder{text-align:center;color:rgba(255,255,255,0.3)}
+.viewer-placeholder div{font-size:3rem;margin-bottom:1rem}
+.viewer-placeholder p{font-size:0.9rem}
+
+/* ─── BOOKING ─── */
+.booking-slots{display:flex;flex-direction:column;gap:0.6rem}
+.slot{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.85rem;background:var(--bg);border-radius:8px;transition:all 0.2s}
+.slot:hover{background:var(--bg2)}
+.slot-left{display:flex;align-items:center;gap:10px}
+.slot-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.slot-dot.available{background:#22c55e}
+.slot-dot.booked{background:var(--accent)}
+.slot-dot.soon{background:#f59e0b}
+.slot-info{font-size:0.83rem}
+.slot-date{font-weight:600;color:var(--ink)}
+.slot-time{font-size:0.75rem;color:var(--muted)}
+.slot-tag{font-size:0.7rem;padding:0.2rem 0.55rem;border-radius:50px;font-weight:600}
+.slot-tag.available{background:rgba(34,197,94,0.1);color:#16a34a}
+.slot-tag.booked{background:rgba(195,90,42,0.1);color:var(--accent)}
+.slot-tag.soon{background:rgba(245,158,11,0.1);color:#b45309}
+.book-btn{font-size:0.75rem;font-weight:600;color:var(--accent);background:rgba(195,90,42,0.08);border:1px solid rgba(195,90,42,0.2);border-radius:6px;padding:0.25rem 0.65rem;cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.2s}
+.book-btn:hover{background:var(--accent);color:white}
+
+/* ─── PROGRESS ─── */
+.progress-list{display:flex;flex-direction:column;gap:0.85rem}
+.progress-item{display:flex;flex-direction:column;gap:5px}
+.progress-top{display:flex;justify-content:space-between;align-items:center}
+.progress-name{font-size:0.83rem;font-weight:500;color:var(--ink)}
+.progress-pct{font-size:0.75rem;font-weight:600;color:var(--accent)}
+.progress-bar{height:5px;background:var(--bg2);border-radius:50px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:50px;transition:width 1s ease}
+
+/* ─── RECENT ACTIVITY ─── */
+.activity-list{display:flex;flex-direction:column;gap:0}
+.activity-item{display:flex;align-items:center;gap:12px;padding:0.65rem 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.activity-icon.pdf{background:rgba(195,90,42,0.08)}
+.activity-icon.booking{background:rgba(34,197,94,0.08)}
+.activity-icon.member{background:rgba(59,130,246,0.08)}
+.activity-text{flex:1}
+.activity-title{font-size:0.83rem;font-weight:500;color:var(--ink)}
+.activity-time{font-size:0.72rem;color:var(--muted)}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--ink);color:white;padding:0.9rem 1.4rem;border-radius:10px;font-size:0.85rem;font-weight:500;z-index:1000;transform:translateY(80px);opacity:0;transition:all 0.3s;max-width:300px;line-height:1.5}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ─── UPGRADE MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:600;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:20px;padding:2rem;max-width:400px;width:100%;position:relative}
+.modal h3{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:0.4rem}
+.modal p{font-size:0.87rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted)}
+.plan-option{border:1.5px solid var(--border);border-radius:10px;padding:1rem 1.1rem;margin-bottom:0.75rem;cursor:pointer;transition:all 0.2s;display:flex;justify-content:space-between;align-items:center}
+.plan-option:hover,.plan-option.selected{border-color:var(--accent);background:rgba(195,90,42,0.04)}
+.plan-option-name{font-weight:600;font-size:0.9rem}
+.plan-option-price{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--accent)}
+.modal-submit{width:100%;background:var(--accent);color:white;border:none;border-radius:8px;padding:0.85rem;font-size:0.92rem;font-weight:600;cursor:pointer;font-family:'Instrument Sans',sans-serif;margin-top:0.5rem;transition:background 0.2s}
+.modal-submit:hover{background:var(--accent2)}
+
+/* ─── TABS ─── */
+.tabs{display:flex;gap:0.4rem;margin-bottom:1.5rem;background:var(--bg2);border-radius:10px;padding:4px}
+.tab{flex:1;text-align:center;padding:0.5rem;border-radius:7px;font-size:0.83rem;font-weight:500;cursor:pointer;transition:all 0.2s;color:var(--muted);border:none;background:none;font-family:'Instrument Sans',sans-serif}
+.tab.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .main{margin-left:0}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .grid-2{grid-template-columns:1fr}
+  .pdf-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">BS</div>
+    <div class="logo-text">Bygg<span>Student</span></div>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">OS</div>
+    <div class="user-name">Ole Studentsen</div>
+    <div class="user-plan">⭐ Student-plan</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Oversikt</div>
+    <a class="nav-item active" onclick="showSection('dashboard')">
+      <span class="nav-icon">🏠</span> Dashboard
+    </a>
+    <a class="nav-item" onclick="showSection('bibliotek')">
+      <span class="nav-icon">📚</span> PDF-bibliotek
+      <span class="nav-badge">9</span>
+    </a>
+    <div class="nav-section">Læring</div>
+    <a class="nav-item" onclick="showSection('statikk')">
+      <span class="nav-icon">⚖️</span> Statikk
+    </a>
+    <a class="nav-item" onclick="showSection('mekanikk')">
+      <span class="nav-icon">📐</span> Mekanikk
+    </a>
+    <a class="nav-item" onclick="showSection('betong')">
+      <span class="nav-icon">🏗️</span> Betong
+    </a>
+    <a class="nav-item" onclick="showSection('stal')">
+      <span class="nav-icon">🔩</span> Stål
+    </a>
+    <div class="nav-section">Min konto</div>
+    <a class="nav-item" onclick="showSection('timer')">
+      <span class="nav-icon">📅</span> Mine timer
+      <span class="nav-badge">1</span>
+    </a>
+    <a class="nav-item" onclick="showSection('profil')">
+      <span class="nav-icon">👤</span> Profil
+    </a>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="upgrade-box" id="upgrade-box">
+      <p>Oppgrader til <strong style="color:white">Pro</strong> og få 2 privattimer + personlig studieplan</p>
+      <button class="upgrade-btn" onclick="openUpgrade()">Oppgrader nå →</button>
+    </div>
+    <button class="logout-btn">← Logg ut</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div class="topbar-actions">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Søk i faginnhold..." oninput="searchPdfs(this.value)">
+      </div>
+      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD SECTION -->
+    <div id="section-dashboard">
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h2>God ettermiddag, Ole! 👋</h2>
+          <p>Du har <span>1 privattime</span> bestilt og tilgang til <span>6 av 9 PDF-er</span></p>
+        </div>
+        <a class="banner-btn" href="#" onclick="showSection('bibliotek')">Gå til PDF-biblioteket →</a>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">PDF-er tilgjengelig</div>
+          <div class="stat-val">6<span>/9</span></div>
+          <div class="stat-sub">3 låst — oppgrader</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Timer brukt</div>
+          <div class="stat-val">4<span>t</span></div>
+          <div class="stat-sub">Denne måneden</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Neste privattime</div>
+          <div class="stat-val" style="font-size:1.1rem;padding-top:4px">Man 28. april</div>
+          <div class="stat-sub">kl. 18:00 · Teams</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ditt abonnement</div>
+          <div class="stat-val" style="font-size:1rem;padding-top:4px">Student</div>
+          <div class="stat-sub">179 kr/mnd · fornyes 1. mai</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- PDF LIBRARY PREVIEW -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📚 Siste fagdokumenter</div>
+            <a class="card-link" href="#" onclick="showSection('bibliotek')">Se alle →</a>
+          </div>
+          <div class="pdf-grid">
+            <div class="pdf-card" onclick="openViewer('Statisk likevekt','Statikk · 12 sider')">
+              <div class="pdf-card-top">
+                <div class="pdf-thumb">📐</div>
+                <span class="pdf-status free">Gratis</span>
+              </div>
+              <h4>Statisk likevekt — komplett</h4>
+              <div class="pdf-card-meta">Statikk <div class="pdf-dot"></div> 12 sider</div>
+            </div>
+            <div class="pdf-card" onclick="openViewer('Resultanten til krefter','Statikk · 8 sider')">
+              <div class="pdf-card-top">
+                <div class="pdf-thumb">📊</div>
+                <span class="pdf-status member">Student</span>
+              </div>
+              <h4>Resultanten til krefter</h4>
+              <div class="pdf-card-meta">Statikk <div class="pdf-dot"></div> 8 sider</div>
+            </div>
+            <div class="pdf-card" onclick="openViewer('Bøyning kap. 16','Mekanikk · 15 sider')">
+              <div class="pdf-card-top">
+                <div class="pdf-thumb">🔧</div>
+                <span class="pdf-status member">Student</span>
+              </div>
+              <h4>Bøyning kap. 16</h4>
+              <div class="pdf-card-meta">Mekanikk <div class="pdf-dot"></div> 15 sider</div>
+            </div>
+            <div class="pdf-card locked">
+              <div class="pdf-card-top">
+                <div class="pdf-thumb">🏗️</div>
+                <span class="pdf-status locked">Pro</span>
+              </div>
+              <h4>Betong EC2 — dimensjonering</h4>
+              <div class="pdf-card-meta">Betong <div class="pdf-dot"></div> 22 sider</div>
+              <div class="lock-overlay"><span>🔒</span><p>Krever Pro-plan</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div style="display:flex;flex-direction:column;gap:1rem">
+          <!-- PROGRESS -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📈 Fremgang</div>
+            </div>
+            <div class="progress-list">
+              <div class="progress-item">
+                <div class="progress-top"><span class="progress-name">Statikk & Likevekt</span><span class="progress-pct">75%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-top"><span class="progress-name">Mekanikk</span><span class="progress-pct">60%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-top"><span class="progress-name">Betong EC2</span><span class="progress-pct">20%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+              </div>
+              <div class="progress-item">
+                <div class="progress-top"><span class="progress-name">Eksamensprep</span><span class="progress-pct">40%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- UPCOMING TIMER -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📅 Kommende timer</div>
+              <a class="card-link" href="#" onclick="showSection('timer')">Se alle →</a>
+            </div>
+            <div class="booking-slots">
+              <div class="slot">
+                <div class="slot-left">
+                  <div class="slot-dot soon"></div>
+                  <div class="slot-info">
+                    <div class="slot-date">Mandag 28. april</div>
+                    <div class="slot-time">kl. 18:00 · 60 min · Teams</div>
+                  </div>
+                </div>
+                <span class="slot-tag soon">Om 4 dager</span>
+              </div>
+              <div class="slot">
+                <div class="slot-left">
+                  <div class="slot-dot available"></div>
+                  <div class="slot-info">
+                    <div class="slot-date">Torsdag 8. mai</div>
+                    <div class="slot-time">Ledig time</div>
+                  </div>
+                </div>
+                <button class="book-btn" onclick="showToast('📅 Bookingsiden åpnes...')">Book</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT ACTIVITY -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🕐 Nylig aktivitet</div>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-icon pdf">📄</div>
+            <div class="activity-text">
+              <div class="activity-title">Åpnet "MEK Likevektslære statikk"</div>
+              <div class="activity-time">I dag kl. 14:32</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon booking">📅</div>
+            <div class="activity-text">
+              <div class="activity-title">Privattime bekreftet — 28. april kl. 18:00</div>
+              <div class="activity-time">I går kl. 19:15</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon pdf">📄</div>
+            <div class="activity-text">
+              <div class="activity-title">Åpnet "Bøyning kap. 16 — med eksempel"</div>
+              <div class="activity-time">22. april kl. 10:08</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon member">⭐</div>
+            <div class="activity-text">
+              <div class="activity-title">Abonnement fornyet — Student 179 kr</div>
+              <div class="activity-time">1. april · betalt med PayPal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BIBLIOTEK SECTION -->
+    <div id="section-bibliotek" style="display:none">
+      <div class="pdf-filters">
+        <button class="filter-btn active" onclick="filterPdfs(this,'alle')">Alle (9)</button>
+        <button class="filter-btn" onclick="filterPdfs(this,'statikk')">Statikk</button>
+        <button class="filter-btn" onclick="filterPdfs(this,'mekanikk')">Mekanikk</button>
+        <button class="filter-btn" onclick="filterPdfs(this,'betong')">Betong</button>
+        <button class="filter-btn" onclick="filterPdfs(this,'eksamen')">Eksamen</button>
+      </div>
+      <div id="pdf-grid-full" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+        <!-- Tilgjengelige -->
+        <div class="pdf-card" data-cat="statikk" onclick="openViewer('Statisk likevekt — komplett','Statikk · 12 sider · Claudio Gomez')">
+          <div class="pdf-card-top"><div class="pdf-thumb">📐</div><span class="pdf-status free">Gratis</span></div>
+          <h4>Statisk likevekt — komplett</h4>
+          <div class="pdf-card-meta">Statikk <div class="pdf-dot"></div> 12 sider <div class="pdf-dot"></div> 2024</div>
+        </div>
+        <div class="pdf-card" data-cat="statikk" onclick="openViewer('Resultanten til krefter','Statikk · 8 sider · Claudio Gomez')">
+          <div class="pdf-card-top"><div class="pdf-thumb">📊</div><span class="pdf-status member">Student</span></div>
+          <h4>Resultanten til krefter</h4>
+          <div class="pdf-card-meta">Statikk <div class="pdf-dot"></div> 8 sider <div class="pdf-dot"></div> 2024</div>
+        </div>
+        <div class="pdf-card" data-cat="statikk" onclick="openViewer('Moment-oppgaver del 1','Statikk · 10 sider · Claudio Gomez')">
+          <div class="pdf-card-top"><div class="pdf-thumb">⚖️</div><span class="pdf-status member">Student</span></div>
+          <h4>Moment-oppgaver del 1</h4>
+          <div class="pdf-card-meta">Statikk <div class="pdf-dot"></div> 10 sider <div class="pdf-dot"></div> 2024</div>
+        </div>
+        <div class="pdf-card" data-cat="statikk" onclick="openViewer('Bjørn-oppgaven','Statikk · 4 sider · Claudio Gomez')">
+          <div class="pdf-card-top"><div class="pdf-thumb">📋</div><span class="pdf-status member">Student</span></div>
+          <h4>Bjørn-oppgaven — løst</h4>
+          <div class="pdf-card-meta">Statikk <div class="pdf-dot"></div> 4 sider <div class="pdf-dot"></div> 2024</div>
+        </div>
+        <div class="pdf-card" data-cat="mekanikk" onclick="openViewer('Bøyning kap. 16','Mekanikk · 15 sider · Claudio Gomez')">
+          <div class="pdf-card-top"><div class="pdf-thumb">🔧</div><span class="pdf-status member">Student</span></div>
+          <h4>Bøyning kap. 16 — med eksempel</h4>
+          <div class="pdf-card-meta">Mekanikk <div class="pdf-dot"></div> 15 sider <div class="pdf-dot"></div> 2024</div>
+        </div>
+        <div class="pdf-card" data-cat="mekanikk" onclick="openViewer('MEK Likevektslære statikk','Mekanikk · 28 sider · Claudio Gomez')">
+          <div class="pdf-card-top"><div class="pdf-thumb">📐</div><span class="pdf-status member">Student</span></div>
+          <h4>MEK Likevektslære statikk</h4>
+          <div class="pdf-card-meta">Mekanikk <div class="pdf-dot"></div> 28 sider <div class="pdf-dot"></div> 2024</div>
+        </div>
+        <!-- Låst for Pro -->
+        <div class="pdf-card locked" data-cat="betong">
+          <div class="pdf-card-top"><div class="pdf-thumb">🏗️</div><span class="pdf-status locked">Pro</span></div>
+          <h4>Betong EC2 — dimensjonering av bjelker</h4>
+          <div class="pdf-card-meta">Betong <div class="pdf-dot"></div> 22 sider <div class="pdf-dot"></div> 2024</div>
+          <div class="lock-overlay"><span>🔒</span><p>Krever Pro-plan</p></div>
+        </div>
+        <div class="pdf-card locked" data-cat="eksamen">
+          <div class="pdf-card-top"><div class="pdf-thumb">📝</div><span class="pdf-status locked">Pro</span></div>
+          <h4>Løsningsforslag — Mekanikk eksamen 2011</h4>
+          <div class="pdf-card-meta">Eksamen <div class="pdf-dot"></div> 18 sider <div class="pdf-dot"></div> 2011</div>
+          <div class="lock-overlay"><span>🔒</span><p>Krever Pro-plan</p></div>
+        </div>
+        <div class="pdf-card locked" data-cat="mekanikk">
+          <div class="pdf-card-top"><div class="pdf-thumb">🔩</div><span class="pdf-status locked">Pro</span></div>
+          <h4>Øvingsoppgave 16.6 — løst</h4>
+          <div class="pdf-card-meta">Mekanikk <div class="pdf-dot"></div> 6 sider <div class="pdf-dot"></div> 2024</div>
+          <div class="lock-overlay"><span>🔒</span><p>Krever Pro-plan</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMER SECTION -->
+    <div id="section-timer" style="display:none">
+      <div class="card" style="max-width:640px">
+        <div class="card-header">
+          <div class="card-title">📅 Mine privattimer</div>
+        </div>
+        <div class="booking-slots">
+          <div class="slot">
+            <div class="slot-left">
+              <div class="slot-dot soon"></div>
+              <div class="slot-info">
+                <div class="slot-date">Mandag 28. april — Statikk & Likevekt</div>
+                <div class="slot-time">kl. 18:00–19:00 · Teams · Claudio Gomez</div>
+              </div>
+            </div>
+            <span class="slot-tag soon">Kommende</span>
+          </div>
+          <div class="slot">
+            <div class="slot-left">
+              <div class="slot-dot booked"></div>
+              <div class="slot-info">
+                <div class="slot-date">Mandag 31. mars — Bøyningsmoment</div>
+                <div class="slot-time">kl. 17:00–18:00 · Teams · Betalt 400 kr via PayPal</div>
+              </div>
+            </div>
+            <span class="slot-tag booked">Gjennomført</span>
+          </div>
+          <div class="slot">
+            <div class="slot-left">
+              <div class="slot-dot available"></div>
+              <div class="slot-info">
+                <div class="slot-date">Torsdag 8. mai — Ledig</div>
+                <div class="slot-time">kl. 18:00 · Book nå</div>
+              </div>
+            </div>
+            <button class="book-btn" onclick="showToast('📅 Bookingskjemaet åpnes — fyll ut og send!')">Book denne</button>
+          </div>
+          <div class="slot">
+            <div class="slot-left">
+              <div class="slot-dot available"></div>
+              <div class="slot-info">
+                <div class="slot-date">Lørdag 10. mai — Ledig</div>
+                <div class="slot-time">kl. 10:00 · Book nå</div>
+              </div>
+            </div>
+            <button class="book-btn" onclick="showToast('📅 Bookingskjemaet åpnes — fyll ut og send!')">Book denne</button>
+          </div>
+        </div>
+        <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--border)">
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem">Du har <strong style="color:var(--ink)">1 inkludert time</strong> igjen denne måneden (Student-plan)</p>
+          <button class="banner-btn" style="background:var(--accent);color:white;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-size:0.83rem;font-weight:600;cursor:pointer;font-family:'Instrument Sans',sans-serif" onclick="showToast('📧 Bookingforespørsel sendes til Claudio!')">Book ekstra time — 400 kr</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMPTY SECTIONS -->
+    <div id="section-statikk" style="display:none">
+      <div class="welcome-banner"><div class="welcome-text"><h2>⚖️ Statikk & Likevekt</h2><p>Alle dokumenter innen statikk samlet på ett sted</p></div></div>
+    </div>
+    <div id="section-mekanikk" style="display:none">
+      <div class="welcome-banner"><div class="welcome-text"><h2>📐 Mekanikk & Faghetslære</h2><p>Bøyning, tøying og spenning — forklart fra grunnen</p></div></div>
+    </div>
+    <div id="section-betong" style="display:none">
+      <div class="welcome-banner"><div class="welcome-text"><h2>🏗️ Betongkonstruksjon</h2><p>Dimensjonering etter EC2 — kommer snart</p></div></div>
+    </div>
+    <div id="section-stal" style="display:none">
+      <div class="welcome-banner"><div class="welcome-text"><h2>🔩 Stålkonstruksjon</h2><p>Dimensjonering etter EC3 — kommer snart</p></div></div>
+    </div>
+    <div id="section-profil" style="display:none">
+      <div class="card" style="max-width:480px">
+        <div class="card-header"><div class="card-title">👤 Min profil</div></div>
+        <div style="display:flex;flex-direction:column;gap:0.85rem">
+          <div style="display:flex;align-items:center;gap:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)">
+            <div style="width:52px;height:52px;border-radius:50%;background:rgba(195,90,42,0.1);border:2px solid rgba(195,90,42,0.25);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--accent)">OS</div>
+            <div><div style="font-weight:600;font-size:0.95rem">Ole Studentsen</div><div style="font-size:0.8rem;color:var(--muted)">ole@student.no</div></div>
+          </div>
+          <div style="font-size:0.83rem;color:var(--ink2)"><strong>Plan:</strong> Student · 179 kr/mnd</div>
+          <div style="font-size:0.83rem;color:var(--ink2)"><strong>Neste betaling:</strong> 1. mai 2025 via PayPal</div>
+          <div style="font-size:0.83rem;color:var(--ink2)"><strong>Medlem siden:</strong> 1. mars 2025</div>
+          <button onclick="showToast('⚙️ Profilinnstillinger åpnes...')" style="margin-top:0.5rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.6rem 1rem;font-size:0.83rem;font-weight:500;cursor:pointer;font-family:'Instrument Sans',sans-serif;text-align:left;color:var(--ink)">✏️ Rediger profil</button>
+          <button onclick="openUpgrade()" style="background:var(--accent);color:white;border:none;border-radius:8px;padding:0.6rem 1rem;font-size:0.83rem;font-weight:600;cursor:pointer;font-family:'Instrument Sans',sans-serif;text-align:left">⬆️ Oppgrader til Pro — 379 kr/mnd</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- PDF VIEWER -->
+<div class="viewer-overlay" id="viewer">
+  <div class="viewer-bar">
+    <div class="viewer-title" id="viewer-title">Dokument</div>
+    <div class="viewer-controls">
+      <button class="vbtn" onclick="showToast('📥 PDF lastes ned...')">⬇ Last ned</button>
+      <button class="vbtn close-btn" onclick="closeViewer()">✕ Lukk</button>
+    </div>
+  </div>
+  <div class="viewer-frame">
+    <div class="viewer-placeholder">
+      <div>📄</div>
+      <p id="viewer-sub">Laster dokument...</p>
+      <p style="margin-top:0.5rem;font-size:0.78rem">I produksjon kobles dette til dine PDF-filer i Google Drive eller AWS S3</p>
+    </div>
+  </div>
+</div>
+
+<!-- UPGRADE MODAL -->
+<div class="modal-overlay" id="upgrade-modal" onclick="closeUpgradeOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeUpgrade()">×</button>
+    <h3>Oppgrader plan</h3>
+    <p>Få tilgang til alt innhold, flere privattimer og personlig studieplan</p>
+    <div class="plan-option selected" onclick="selectPlan(this,'Student · 179 kr/mnd')">
+      <div>
+        <div class="plan-option-name">Student</div>
+        <div style="font-size:0.75rem;color:var(--muted)">6 PDF-er + 1 privattime/mnd</div>
+      </div>
+      <div class="plan-option-price">179 kr</div>
+    </div>
+    <div class="plan-option" onclick="selectPlan(this,'Ingeniør Pro · 379 kr/mnd')">
+      <div>
+        <div class="plan-option-name">Ingeniør Pro ⭐</div>
+        <div style="font-size:0.75rem;color:var(--muted)">Alle PDF-er + 2 privattimer/mnd</div>
+      </div>
+      <div class="plan-option-price">379 kr</div>
+    </div>
+    <button class="modal-submit" onclick="submitUpgrade()">Betal med PayPal eller Vipps →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const sections = ['dashboard','bibliotek','statikk','mekanikk','betong','stal','timer','profil'];
+const titles = {dashboard:'Dashboard',bibliotek:'PDF-bibliotek',statikk:'Statikk & Likevekt',mekanikk:'Mekanikk',betong:'Betongkonstruksjon',stal:'Stålkonstruksjon',timer:'Mine timer',profil:'Min profil'};
+
+function showSection(id){
+  sections.forEach(s=>{
+    document.getElementById('section-'+s).style.display = s===id?'block':'none';
+  });
+  document.getElementById('page-title').textContent = titles[id]||id;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  event.currentTarget && event.currentTarget.classList.add('active');
+}
+
+function openViewer(title, sub){
+  document.getElementById('viewer-title').textContent = title;
+  document.getElementById('viewer-sub').textContent = sub;
+  document.getElementById('viewer').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeViewer(){
+  document.getElementById('viewer').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+function filterPdfs(btn,cat){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#pdf-grid-full .pdf-card').forEach(card=>{
+    card.style.display = (cat==='alle'||card.dataset.cat===cat)?'block':'none';
+  });
+}
+
+function searchPdfs(q){
+  if(!q){document.querySelectorAll('#pdf-grid-full .pdf-card').forEach(c=>c.style.display='block');return;}
+  document.querySelectorAll('#pdf-grid-full .pdf-card').forEach(card=>{
+    const text = card.querySelector('h4')?.textContent.toLowerCase()||'';
+    card.style.display = text.includes(q.toLowerCase())?'block':'none';
+  });
+}
+
+function openUpgrade(){document.getElementById('upgrade-modal').classList.add('open')}
+function closeUpgrade(){document.getElementById('upgrade-modal').classList.remove('open')}
+function closeUpgradeOutside(e){if(e.target.id==='upgrade-modal')closeUpgrade()}
+
+let selectedPlan = 'Student · 179 kr/mnd';
+function selectPlan(el,plan){
+  selectedPlan=plan;
+  document.querySelectorAll('.plan-option').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function submitUpgrade(){
+  closeUpgrade();
+  showToast('✅ Flott! Du mottar betalingslenke på e-post innen kort tid — '+selectedPlan);
+}
+
+// Animate progress bars on load
+window.addEventListener('load',()=>{
+  document.querySelectorAll('.progress-fill').forEach(bar=>{
+    const w=bar.style.width;
+    bar.style.width='0';
+    setTimeout(()=>bar.style.width=w,300);
+  });
+});
+</script>
+</body>
+</html>

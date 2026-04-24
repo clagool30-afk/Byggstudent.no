@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ByggStudent.no — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;
+  --bg2:#161820;
+  --bg3:#1e2028;
+  --ink:#f0f0ee;
+  --ink2:#a0a09a;
+  --muted:#5a5a55;
+  --accent:#c35a2a;
+  --accent2:#e07a4a;
+  --green:#22c55e;
+  --blue:#3b82f6;
+  --amber:#f59e0b;
+  --border:rgba(255,255,255,0.07);
+  --sidebar:230px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh;overflow-x:hidden}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:var(--sidebar);background:var(--bg2);min-height:100vh;position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100;border-right:1px solid var(--border)}
+.sidebar-logo{padding:1.4rem 1.3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:800;color:white;flex-shrink:0}
+.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;color:var(--ink);letter-spacing:-0.02em}
+.logo-text span{color:var(--accent2)}
+.admin-badge{font-size:0.6rem;background:rgba(195,90,42,0.2);color:var(--accent2);padding:0.15rem 0.5rem;border-radius:50px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-left:auto}
+
+.sidebar-profile{padding:1rem 1.3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.profile-av{width:36px;height:36px;border-radius:50%;background:rgba(195,90,42,0.2);border:2px solid rgba(195,90,42,0.35);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;color:var(--accent2);flex-shrink:0}
+.profile-info{flex:1;min-width:0}
+.profile-name{font-size:0.84rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-role{font-size:0.7rem;color:var(--muted)}
+
+.sidebar-nav{flex:1;padding:0.75rem 0.6rem;overflow-y:auto}
+.nav-group{font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:0.8rem 0.7rem 0.35rem}
+.nav-item{display:flex;align-items:center;gap:9px;padding:0.55rem 0.75rem;border-radius:7px;color:var(--ink2);font-size:0.84rem;cursor:pointer;transition:all 0.15s;margin-bottom:1px;text-decoration:none;border:none;background:none;width:100%;font-family:'Instrument Sans',sans-serif}
+.nav-item:hover{background:var(--bg3);color:var(--ink)}
+.nav-item.active{background:rgba(195,90,42,0.15);color:var(--ink);border:1px solid rgba(195,90,42,0.2)}
+.nav-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.nav-pill{margin-left:auto;background:var(--accent);color:white;font-size:0.62rem;font-weight:700;padding:0.15rem 0.45rem;border-radius:50px;min-width:18px;text-align:center}
+.nav-pill.green{background:var(--green)}
+.nav-pill.amber{background:var(--amber)}
+
+.sidebar-footer{padding:1rem 1.3rem;border-top:1px solid var(--border)}
+.go-site{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--ink2);text-decoration:none;transition:color 0.2s;padding:0.4rem 0}
+.go-site:hover{color:var(--accent2)}
+
+/* ─── MAIN ─── */
+.main{margin-left:var(--sidebar);flex:1;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 2rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-left{display:flex;align-items:center;gap:1rem}
+.page-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--ink);letter-spacing:-0.02em}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.85)}}
+.live-text{font-size:0.75rem;color:var(--green);font-weight:500}
+.topbar-right{display:flex;align-items:center;gap:0.75rem}
+.topbar-btn{background:var(--bg3);border:1px solid var(--border);color:var(--ink2);padding:0.4rem 0.9rem;border-radius:7px;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.2s}
+.topbar-btn:hover{border-color:rgba(195,90,42,0.4);color:var(--accent2)}
+.topbar-btn.primary{background:var(--accent);border-color:var(--accent);color:white;font-weight:600}
+.topbar-btn.primary:hover{background:var(--accent2)}
+.notif{position:relative;width:34px;height:34px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:border-color 0.2s}
+.notif:hover{border-color:rgba(195,90,42,0.4)}
+.notif-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--bg2)}
+
+.content{padding:1.75rem 2rem;flex:1}
+
+/* ─── STATS ─── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.3rem;position:relative;overflow:hidden;transition:border-color 0.2s}
+.stat:hover{border-color:rgba(195,90,42,0.25)}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0;transition:opacity 0.2s}
+.stat:hover::before{opacity:1}
+.stat-label{font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;font-weight:500;margin-bottom:0.5rem}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;color:var(--ink);line-height:1;margin-bottom:0.3rem}
+.stat-val span{color:var(--accent2)}
+.stat-trend{font-size:0.72rem;display:flex;align-items:center;gap:4px}
+.trend-up{color:var(--green)}
+.trend-neutral{color:var(--muted)}
+.stat-icon{position:absolute;top:1rem;right:1rem;font-size:1.4rem;opacity:0.15}
+
+/* ─── LAYOUT ─── */
+.grid-main{display:grid;grid-template-columns:1.4fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.grid-bot{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:13px;overflow:hidden}
+.panel-header{padding:1rem 1.3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--ink);letter-spacing:-0.02em}
+.panel-action{font-size:0.75rem;color:var(--accent2);cursor:pointer;font-weight:500;background:none;border:none;font-family:'Instrument Sans',sans-serif;transition:color 0.2s}
+.panel-action:hover{color:white}
+.panel-body{padding:1.1rem 1.3rem}
+
+/* ─── MEMBERS TABLE ─── */
+.members-table{width:100%;border-collapse:collapse}
+.members-table th{font-size:0.67rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:0 0.75rem 0.6rem;border-bottom:1px solid var(--border)}
+.members-table td{padding:0.7rem 0.75rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.83rem;vertical-align:middle}
+.members-table tr:last-child td{border-bottom:none}
+.members-table tr:hover td{background:rgba(255,255,255,0.02)}
+.member-av{width:28px;height:28px;border-radius:50%;background:rgba(195,90,42,0.15);border:1px solid rgba(195,90,42,0.2);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--accent2);flex-shrink:0;font-family:'Syne',sans-serif}
+.member-name{font-weight:500;color:var(--ink)}
+.member-email{font-size:0.75rem;color:var(--muted)}
+.plan-badge{font-size:0.68rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:50px;white-space:nowrap}
+.plan-badge.basis{background:rgba(90,90,85,0.2);color:var(--muted);border:1px solid rgba(90,90,85,0.3)}
+.plan-badge.student{background:rgba(195,90,42,0.15);color:var(--accent2);border:1px solid rgba(195,90,42,0.25)}
+.plan-badge.pro{background:rgba(245,158,11,0.12);color:var(--amber);border:1px solid rgba(245,158,11,0.25)}
+.status-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:5px}
+.status-dot.active{background:var(--green)}
+.status-dot.pending{background:var(--amber)}
+.status-dot.inactive{background:var(--muted)}
+.action-btn{background:var(--bg3);border:1px solid var(--border);color:var(--ink2);padding:0.2rem 0.6rem;border-radius:5px;font-size:0.72rem;cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.15s;white-space:nowrap}
+.action-btn:hover{border-color:rgba(195,90,42,0.4);color:var(--accent2)}
+.action-btn.approve{border-color:rgba(34,197,94,0.3);color:var(--green)}
+.action-btn.approve:hover{background:rgba(34,197,94,0.1)}
+
+/* ─── BOOKING LIST ─── */
+.booking-item{display:flex;align-items:center;gap:12px;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.booking-item:last-child{border-bottom:none}
+.booking-time{flex-shrink:0;text-align:center;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.6rem;min-width:54px}
+.booking-day{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+.booking-date{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--ink);line-height:1.1}
+.booking-info{flex:1;min-width:0}
+.booking-name{font-size:0.84rem;font-weight:600;color:var(--ink)}
+.booking-detail{font-size:0.74rem;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.booking-status{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.bstatus{font-size:0.68rem;font-weight:600;padding:0.2rem 0.55rem;border-radius:50px}
+.bstatus.confirmed{background:rgba(34,197,94,0.1);color:var(--green)}
+.bstatus.pending{background:rgba(245,158,11,0.1);color:var(--amber)}
+.bstatus.new{background:rgba(59,130,246,0.1);color:var(--blue)}
+.bamt{font-size:0.72rem;color:var(--muted)}
+
+/* ─── REVENUE CHART ─── */
+.chart-wrap{display:flex;align-items:flex-end;gap:8px;height:100px;margin:0.5rem 0}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.bar{width:100%;border-radius:4px 4px 0 0;transition:height 0.6s ease;cursor:pointer;position:relative}
+.bar:hover{filter:brightness(1.2)}
+.bar-label{font-size:0.65rem;color:var(--muted);white-space:nowrap}
+.bar-val{font-size:0.68rem;color:var(--ink2);font-weight:500}
+
+/* ─── PDF MANAGER ─── */
+.drive-connect{background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.drive-info{display:flex;align-items:center;gap:10px}
+.drive-icon{font-size:1.3rem}
+.drive-text{font-size:0.83rem;color:var(--ink)}
+.drive-sub{font-size:0.72rem;color:var(--muted);margin-top:1px}
+.drive-status{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--green);font-weight:600}
+.pdf-manage-list{display:flex;flex-direction:column;gap:0.5rem}
+.pdf-row{display:flex;align-items:center;gap:10px;padding:0.6rem 0.75rem;background:var(--bg3);border-radius:8px;transition:background 0.15s}
+.pdf-row:hover{background:rgba(255,255,255,0.04)}
+.pdf-row-icon{font-size:15px;flex-shrink:0}
+.pdf-row-info{flex:1;min-width:0}
+.pdf-row-name{font-size:0.82rem;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pdf-row-meta{font-size:0.7rem;color:var(--muted)}
+.pdf-row-plan{font-size:0.67rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:50px}
+.pdf-row-plan.gratis{background:rgba(34,197,94,0.1);color:var(--green)}
+.pdf-row-plan.student{background:rgba(195,90,42,0.1);color:var(--accent2)}
+.pdf-row-plan.pro{background:rgba(245,158,11,0.1);color:var(--amber)}
+.pdf-row-actions{display:flex;gap:5px;flex-shrink:0}
+.icon-btn{width:26px;height:26px;background:none;border:1px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--muted);transition:all 0.15s}
+.icon-btn:hover{border-color:rgba(195,90,42,0.4);color:var(--accent2)}
+
+/* ─── NOTIFICATIONS ─── */
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:0.7rem 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.notif-item:last-child{border-bottom:none}
+.notif-item.unread .notif-text{color:var(--ink)}
+.notif-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.notif-icon.member{background:rgba(195,90,42,0.12)}
+.notif-icon.booking{background:rgba(34,197,94,0.1)}
+.notif-icon.payment{background:rgba(59,130,246,0.1)}
+.notif-text{flex:1;min-width:0}
+.notif-msg{font-size:0.81rem;color:var(--ink2);line-height:1.45}
+.notif-msg strong{color:var(--ink);font-weight:600}
+.notif-time{font-size:0.69rem;color:var(--muted);margin-top:2px}
+.unread-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:6px}
+
+/* ─── MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:600;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.8rem;max-width:460px;width:100%;position:relative;animation:modalIn 0.2s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(0.96)}to{opacity:1;transform:scale(1)}}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted);line-height:1}
+.modal h3{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--ink);letter-spacing:-0.03em;margin-bottom:0.35rem}
+.modal-sub{font-size:0.84rem;color:var(--muted);margin-bottom:1.3rem;line-height:1.55}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:0.85rem}
+.field label{font-size:0.7rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:0.6rem 0.85rem;font-size:0.85rem;font-family:'Instrument Sans',sans-serif;color:var(--ink);outline:none;transition:border-color 0.2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(195,90,42,0.5)}
+.field select option{background:var(--bg2)}
+.field textarea{min-height:70px;resize:none}
+.modal-actions{display:flex;gap:0.6rem;margin-top:0.5rem}
+.btn-cancel{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--ink2);padding:0.65rem;border-radius:7px;font-size:0.85rem;font-weight:500;cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:all 0.2s}
+.btn-cancel:hover{color:var(--ink)}
+.btn-confirm{flex:2;background:var(--accent);border:none;color:white;padding:0.65rem;border-radius:7px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'Instrument Sans',sans-serif;transition:background 0.2s}
+.btn-confirm:hover{background:var(--accent2)}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--border);color:var(--ink);padding:0.8rem 1.2rem;border-radius:10px;font-size:0.84rem;font-weight:500;z-index:1000;transform:translateY(70px);opacity:0;transition:all 0.3s;max-width:300px;line-height:1.4}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:1100px){.stats-grid{grid-template-columns:1fr 1fr}.grid-main{grid-template-columns:1fr}}
+@media(max-width:800px){.sidebar{display:none}.main{margin-left:0}.grid-bot{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">BS</div>
+    <div class="logo-text">Bygg<span>Student</span></div>
+    <div class="admin-badge">Admin</div>
+  </div>
+  <div class="sidebar-profile">
+    <div class="profile-av">CG</div>
+    <div class="profile-info">
+      <div class="profile-name">Claudio Gomez</div>
+      <div class="profile-role">Administrator</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group">Oversikt</div>
+    <button class="nav-item active" onclick="showSection('dashboard',this)">
+      <span class="nav-icon">📊</span> Dashboard
+    </button>
+    <button class="nav-item" onclick="showSection('members',this)">
+      <span class="nav-icon">👥</span> Medlemmer
+      <span class="nav-pill">8</span>
+    </button>
+    <button class="nav-item" onclick="showSection('bookings',this)">
+      <span class="nav-icon">📅</span> Bookinger
+      <span class="nav-pill amber">3</span>
+    </button>
+    <div class="nav-group">Innhold</div>
+    <button class="nav-item" onclick="showSection('pdfs',this)">
+      <span class="nav-icon">📚</span> PDF-bibliotek
+    </button>
+    <button class="nav-item" onclick="showSection('drive',this)">
+      <span class="nav-icon">☁️</span> Google Drive
+      <span class="nav-pill green">●</span>
+    </button>
+    <div class="nav-group">Økonomi</div>
+    <button class="nav-item" onclick="showSection('revenue',this)">
+      <span class="nav-icon">💰</span> Inntekter
+    </button>
+    <button class="nav-item" onclick="showSection('settings',this)">
+      <span class="nav-icon">⚙️</span> Innstillinger
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <a class="go-site" href="ByggStudent_no.html" target="_blank">↗ Se nettsiden</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title" id="page-title">Dashboard</div>
+      <div class="live-dot"></div>
+      <div class="live-text">Live</div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn" onclick="openModal('email')">✉ Send e-post til alle</button>
+      <button class="topbar-btn primary" onclick="openModal('addpdf')">+ Legg til PDF</button>
+      <div class="notif" onclick="showSection('bookings',null)">🔔<div class="notif-dot"></div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="section-dashboard">
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-icon">👥</div>
+          <div class="stat-label">Totale medlemmer</div>
+          <div class="stat-val">8</div>
+          <div class="stat-trend"><span class="trend-up">↑ +2</span><span class="trend-neutral">denne måneden</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">💰</div>
+          <div class="stat-label">Månedlig inntekt</div>
+          <div class="stat-val">2<span>138</span> kr</div>
+          <div class="stat-trend"><span class="trend-up">↑ +358 kr</span><span class="trend-neutral">vs forrige mnd</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">📅</div>
+          <div class="stat-label">Timer denne måneden</div>
+          <div class="stat-val">6</div>
+          <div class="stat-trend"><span class="trend-neutral">= 2 400 kr</span><span class="trend-neutral">privatimer</span></div>
+        </div>
+        <div class="stat">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-label">Ventende godkjenning</div>
+          <div class="stat-val">2<span style="font-size:1rem;color:var(--amber)">!</span></div>
+          <div class="stat-trend"><span class="trend-neutral">Klikk for å behandle</span></div>
+        </div>
+      </div>
+
+      <div class="grid-main">
+        <!-- MEMBERS -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">👥 Siste medlemmer</div>
+            <button class="panel-action" onclick="showSection('members',null)">Se alle →</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="members-table">
+              <thead><tr>
+                <th>Navn</th><th>Plan</th><th>Status</th><th>Betalt</th><th></th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">OS</div><div><div class="member-name">Ole Studentsen</div><div class="member-email">ole@student.no</div></div></div></td>
+                  <td><span class="plan-badge student">Student</span></td>
+                  <td><span class="status-dot active"></span>Aktiv</td>
+                  <td>179 kr</td>
+                  <td><button class="action-btn" onclick="showToast('📧 E-post sendt til Ole!')">E-post</button></td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">MN</div><div><div class="member-name">Maria Nilsen</div><div class="member-email">maria@fagskolen.no</div></div></div></td>
+                  <td><span class="plan-badge pro">Ingeniør Pro</span></td>
+                  <td><span class="status-dot active"></span>Aktiv</td>
+                  <td>379 kr</td>
+                  <td><button class="action-btn" onclick="showToast('📧 E-post sendt til Maria!')">E-post</button></td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">AH</div><div><div class="member-name">Anders Hansen</div><div class="member-email">anders@uia.no</div></div></div></td>
+                  <td><span class="plan-badge basis">Basis</span></td>
+                  <td><span class="status-dot pending"></span>Venter</td>
+                  <td>79 kr</td>
+                  <td><button class="action-btn approve" onclick="approveMember('Anders Hansen')">Godkjenn</button></td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">LB</div><div><div class="member-name">Lena Berg</div><div class="member-email">lena@hiof.no</div></div></div></td>
+                  <td><span class="plan-badge student">Student</span></td>
+                  <td><span class="status-dot pending"></span>Venter</td>
+                  <td>179 kr</td>
+                  <td><button class="action-btn approve" onclick="approveMember('Lena Berg')">Godkjenn</button></td>
+                </tr>
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">KJ</div><div><div class="member-name">Kristian Johansen</div><div class="member-email">kj@ntnu.no</div></div></div></td>
+                  <td><span class="plan-badge pro">Ingeniør Pro</span></td>
+                  <td><span class="status-dot active"></span>Aktiv</td>
+                  <td>379 kr</td>
+                  <td><button class="action-btn" onclick="showToast('📧 E-post sendt til Kristian!')">E-post</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div style="display:flex;flex-direction:column;gap:1.2rem">
+          <!-- REVENUE CHART -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">💰 Inntekter 2025</div>
+            </div>
+            <div class="panel-body">
+              <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--ink);margin-bottom:0.2rem">8 538 kr</div>
+              <div style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem">Total hittil i år</div>
+              <div class="chart-wrap" id="chart"></div>
+              <div style="display:flex;justify-content:space-between;margin-top:0.5rem">
+                <span style="font-size:0.68rem;color:var(--muted)">Jan</span>
+                <span style="font-size:0.68rem;color:var(--muted)">Feb</span>
+                <span style="font-size:0.68rem;color:var(--muted)">Mar</span>
+                <span style="font-size:0.68rem;color:var(--muted)">Apr</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- NOTIFICATIONS -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">🔔 Varsler</div>
+              <button class="panel-action" onclick="showToast('✓ Alle varsler markert som lest')">Merk alle lest</button>
+            </div>
+            <div class="panel-body" style="padding:0.6rem 1.1rem">
+              <div class="notif-item unread">
+                <div class="notif-icon member">👤</div>
+                <div class="notif-text">
+                  <div class="notif-msg"><strong>Lena Berg</strong> har registrert seg — Student 179 kr</div>
+                  <div class="notif-time">For 12 min siden · PayPal</div>
+                </div>
+                <div class="unread-dot"></div>
+              </div>
+              <div class="notif-item unread">
+                <div class="notif-icon booking">📅</div>
+                <div class="notif-text">
+                  <div class="notif-msg"><strong>Anders Hansen</strong> vil booke time — Statikk</div>
+                  <div class="notif-time">For 45 min siden</div>
+                </div>
+                <div class="unread-dot"></div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon payment">💳</div>
+                <div class="notif-text">
+                  <div class="notif-msg"><strong>PayPal</strong> — 379 kr mottatt fra Kristian Johansen</div>
+                  <div class="notif-time">I går kl. 14:22</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPCOMING BOOKINGS -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📅 Kommende privattimer</div>
+          <button class="panel-action" onclick="showSection('bookings',null)">Se alle →</button>
+        </div>
+        <div class="panel-body">
+          <div class="booking-item">
+            <div class="booking-time"><div class="booking-day">Man</div><div class="booking-date">28</div></div>
+            <div class="booking-info">
+              <div class="booking-name">Ole Studentsen</div>
+              <div class="booking-detail">kl. 18:00–19:00 · Statikk & Likevekt · Teams · Student-plan (inkl.)</div>
+            </div>
+            <div class="booking-status"><span class="bstatus confirmed">Bekreftet</span><span class="bamt">Inkludert</span></div>
+          </div>
+          <div class="booking-item">
+            <div class="booking-time"><div class="booking-day">Tirs</div><div class="booking-date">29</div></div>
+            <div class="booking-info">
+              <div class="booking-name">Maria Nilsen</div>
+              <div class="booking-detail">kl. 17:00–18:00 · Betong EC2 · Teams · Pro-plan (inkl.)</div>
+            </div>
+            <div class="booking-status"><span class="bstatus confirmed">Bekreftet</span><span class="bamt">Inkludert</span></div>
+          </div>
+          <div class="booking-item">
+            <div class="booking-time"><div class="booking-day">Fre</div><div class="booking-date">2</div></div>
+            <div class="booking-info">
+              <div class="booking-name">Anders Hansen</div>
+              <div class="booking-detail">kl. 19:00–20:00 · Mekanikk & Bøyning · Teams · Enkelt time</div>
+            </div>
+            <div class="booking-status"><span class="bstatus pending">Venter svar</span><span class="bamt">400 kr</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEMBERS SECTION -->
+    <div id="section-members" style="display:none">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">👥 Alle medlemmer (8)</div>
+          <button class="panel-action" onclick="openModal('email')">✉ Send gruppe-e-post</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="members-table">
+            <thead><tr><th>Navn</th><th>E-post</th><th>Plan</th><th>Status</th><th>Betalt</th><th>Siden</th><th>Handlinger</th></tr></thead>
+            <tbody>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">OS</div><div class="member-name">Ole Studentsen</div></div></td><td style="color:var(--muted);font-size:0.78rem">ole@student.no</td><td><span class="plan-badge student">Student</span></td><td><span class="status-dot active"></span>Aktiv</td><td>179 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">1. mars</td><td><div style="display:flex;gap:5px"><button class="action-btn" onclick="showToast('📧 E-post sendt!')">E-post</button><button class="action-btn" onclick="showToast('✏️ Redigerer Ole...')">Rediger</button></div></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">MN</div><div class="member-name">Maria Nilsen</div></div></td><td style="color:var(--muted);font-size:0.78rem">maria@fagskolen.no</td><td><span class="plan-badge pro">Ingeniør Pro</span></td><td><span class="status-dot active"></span>Aktiv</td><td>379 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">15. feb</td><td><div style="display:flex;gap:5px"><button class="action-btn" onclick="showToast('📧 E-post sendt!')">E-post</button><button class="action-btn" onclick="showToast('✏️ Redigerer Maria...')">Rediger</button></div></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">AH</div><div class="member-name">Anders Hansen</div></div></td><td style="color:var(--muted);font-size:0.78rem">anders@uia.no</td><td><span class="plan-badge basis">Basis</span></td><td><span class="status-dot pending"></span>Venter</td><td>79 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">I dag</td><td><button class="action-btn approve" onclick="approveMember('Anders Hansen')">✓ Godkjenn</button></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">LB</div><div class="member-name">Lena Berg</div></div></td><td style="color:var(--muted);font-size:0.78rem">lena@hiof.no</td><td><span class="plan-badge student">Student</span></td><td><span class="status-dot pending"></span>Venter</td><td>179 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">I dag</td><td><button class="action-btn approve" onclick="approveMember('Lena Berg')">✓ Godkjenn</button></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">KJ</div><div class="member-name">Kristian Johansen</div></div></td><td style="color:var(--muted);font-size:0.78rem">kj@ntnu.no</td><td><span class="plan-badge pro">Ingeniør Pro</span></td><td><span class="status-dot active"></span>Aktiv</td><td>379 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">10. jan</td><td><div style="display:flex;gap:5px"><button class="action-btn" onclick="showToast('📧 E-post sendt!')">E-post</button><button class="action-btn" onclick="showToast('✏️ Redigerer...')">Rediger</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRIVE SECTION -->
+    <div id="section-drive" style="display:none">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">☁️ Google Drive — PDF-mappe</div>
+          <button class="panel-action" onclick="showToast('🔗 Åpner Google Drive...')">Åpne i Drive →</button>
+        </div>
+        <div class="panel-body">
+          <div class="drive-connect">
+            <div class="drive-info">
+              <div class="drive-icon">🟢</div>
+              <div>
+                <div class="drive-text">Google Drive tilkoblet</div>
+                <div class="drive-sub">Mappe: ByggStudent.no / PDF-bibliotek · 9 filer</div>
+              </div>
+            </div>
+            <div class="drive-status">● Tilkoblet</div>
+          </div>
+
+          <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1rem;font-size:0.83rem;color:var(--ink2);line-height:1.6">
+            <strong style="color:var(--blue)">Slik fungerer det:</strong><br>
+            1. Last opp PDF-filer til mappen <strong style="color:var(--ink)">ByggStudent.no → PDF-bibliotek</strong> i Google Drive<br>
+            2. Kopier lenken til filen (Høyreklikk → Del → Kopier lenke)<br>
+            3. Lim inn lenken her og velg hvilken plan som kreves<br>
+            4. Studenter med riktig plan ser og åpner filen direkte i dashboardet
+          </div>
+
+          <div style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem">PDF-filer i biblioteket</div>
+          <div class="pdf-manage-list">
+            <div class="pdf-row"><span class="pdf-row-icon">📐</span><div class="pdf-row-info"><div class="pdf-row-name">Statisk likevekt — komplett</div><div class="pdf-row-meta">Statikk · 12 sider · drive.google.com/...</div></div><span class="pdf-row-plan gratis">Gratis</span><div class="pdf-row-actions"><button class="icon-btn" onclick="showToast('🔗 Lenke kopiert!')">🔗</button><button class="icon-btn" onclick="showToast('✏️ Redigerer...')">✏️</button></div></div>
+            <div class="pdf-row"><span class="pdf-row-icon">📊</span><div class="pdf-row-info"><div class="pdf-row-name">Resultanten til krefter</div><div class="pdf-row-meta">Statikk · 8 sider · drive.google.com/...</div></div><span class="pdf-row-plan student">Student</span><div class="pdf-row-actions"><button class="icon-btn" onclick="showToast('🔗 Lenke kopiert!')">🔗</button><button class="icon-btn" onclick="showToast('✏️ Redigerer...')">✏️</button></div></div>
+            <div class="pdf-row"><span class="pdf-row-icon">⚖️</span><div class="pdf-row-info"><div class="pdf-row-name">Moment-oppgaver del 1</div><div class="pdf-row-meta">Statikk · 10 sider · drive.google.com/...</div></div><span class="pdf-row-plan student">Student</span><div class="pdf-row-actions"><button class="icon-btn" onclick="showToast('🔗 Lenke kopiert!')">🔗</button><button class="icon-btn" onclick="showToast('✏️ Redigerer...')">✏️</button></div></div>
+            <div class="pdf-row"><span class="pdf-row-icon">🔧</span><div class="pdf-row-info"><div class="pdf-row-name">Bøyning kap. 16 — med eksempel</div><div class="pdf-row-meta">Mekanikk · 15 sider · drive.google.com/...</div></div><span class="pdf-row-plan student">Student</span><div class="pdf-row-actions"><button class="icon-btn" onclick="showToast('🔗 Lenke kopiert!')">🔗</button><button class="icon-btn" onclick="showToast('✏️ Redigerer...')">✏️</button></div></div>
+            <div class="pdf-row"><span class="pdf-row-icon">🏗️</span><div class="pdf-row-info"><div class="pdf-row-name">Betong EC2 — dimensjonering</div><div class="pdf-row-meta">Betong · 22 sider · drive.google.com/...</div></div><span class="pdf-row-plan pro">Pro</span><div class="pdf-row-actions"><button class="icon-btn" onclick="showToast('🔗 Lenke kopiert!')">🔗</button><button class="icon-btn" onclick="showToast('✏️ Redigerer...')">✏️</button></div></div>
+          </div>
+          <button class="topbar-btn primary" style="margin-top:1rem;padding:0.6rem 1.2rem;border-radius:8px;font-size:0.84rem" onclick="openModal('addpdf')">+ Legg til ny PDF fra Drive</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKINGS SECTION -->
+    <div id="section-bookings" style="display:none">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">📅 Alle bookinger</div></div>
+        <div class="panel-body">
+          <div class="booking-item">
+            <div class="booking-time"><div class="booking-day">Man</div><div class="booking-date">28</div></div>
+            <div class="booking-info"><div class="booking-name">Ole Studentsen — Statikk & Likevekt</div><div class="booking-detail">kl. 18:00 · Teams · Student (inkl.) · ole@student.no</div></div>
+            <div class="booking-status"><span class="bstatus confirmed">Bekreftet</span></div>
+          </div>
+          <div class="booking-item">
+            <div class="booking-time"><div class="booking-day">Tirs</div><div class="booking-date">29</div></div>
+            <div class="booking-info"><div class="booking-name">Maria Nilsen — Betong EC2</div><div class="booking-detail">kl. 17:00 · Teams · Pro (inkl.) · maria@fagskolen.no</div></div>
+            <div class="booking-status"><span class="bstatus confirmed">Bekreftet</span></div>
+          </div>
+          <div class="booking-item">
+            <div class="booking-time"><div class="booking-day">Fre</div><div class="booking-date">2</div></div>
+            <div class="booking-info"><div class="booking-name">Anders Hansen — Mekanikk & Bøyning</div><div class="booking-detail">kl. 19:00 · Teams · Enkelt time · 400 kr · anders@uia.no</div></div>
+            <div class="booking-status">
+              <span class="bstatus pending">Venter</span>
+              <div style="display:flex;gap:5px;margin-top:4px">
+                <button class="action-btn approve" onclick="showToast('✅ Booking bekreftet! E-post sendt til Anders')">Bekreft</button>
+                <button class="action-btn" onclick="showToast('❌ Booking avvist')">Avvis</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PDFs, Revenue, Settings placeholders -->
+    <div id="section-pdfs" style="display:none">
+      <div class="panel"><div class="panel-header"><div class="panel-title">📚 PDF-bibliotek</div><button class="panel-action" onclick="openModal('addpdf')">+ Legg til PDF</button></div><div class="panel-body"><p style="font-size:0.85rem;color:var(--muted)">Administrer PDF-ene her. Gå til <strong style="color:var(--ink)">Google Drive</strong> for å koble til filer.</p></div></div>
+    </div>
+    <div id="section-revenue" style="display:none">
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-label">Januar</div><div class="stat-val">1<span>200</span> kr</div></div>
+        <div class="stat"><div class="stat-label">Februar</div><div class="stat-val">1<span>580</span> kr</div></div>
+        <div class="stat"><div class="stat-label">Mars</div><div class="stat-val">2<span>400</span> kr</div></div>
+        <div class="stat"><div class="stat-label">April (hittil)</div><div class="stat-val">3<span>358</span> kr</div></div>
+      </div>
+    </div>
+    <div id="section-settings" style="display:none">
+      <div class="panel"><div class="panel-header"><div class="panel-title">⚙️ Innstillinger</div></div><div class="panel-body">
+        <div class="field"><label>Din e-post (varsler)</label><input type="email" value="claudio@byggstudent.no"></div>
+        <div class="field"><label>PayPal e-post</label><input type="email" value="claudio@paypal.no"></div>
+        <div class="field"><label>Vipps-nummer</label><input type="tel" placeholder="+47 xxx xx xxx"></div>
+        <button class="btn-confirm" style="margin-top:0.5rem;padding:0.65rem 1.5rem" onclick="showToast('✅ Innstillinger lagret!')">Lagre endringer</button>
+      </div></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-email" onclick="closeModalOutside(event,'modal-email')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-email')">×</button>
+    <h3>✉ Send e-post til alle</h3>
+    <p class="modal-sub">Sendes til alle aktive medlemmer</p>
+    <div class="field"><label>Mottakere</label><select><option>Alle medlemmer (8)</option><option>Kun Student-plan</option><option>Kun Pro-plan</option></select></div>
+    <div class="field"><label>Emne</label><input type="text" placeholder="F.eks. Nytt faginnhold lagt til!"></div>
+    <div class="field"><label>Melding</label><textarea placeholder="Skriv meldingen din her..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-email')">Avbryt</button>
+      <button class="btn-confirm" onclick="sendEmail()">Send e-post →</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-addpdf" onclick="closeModalOutside(event,'modal-addpdf')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-addpdf')">×</button>
+    <h3>+ Legg til PDF fra Drive</h3>
+    <p class="modal-sub">Kopier Drive-lenken og velg hvilken plan som gir tilgang</p>
+    <div class="field"><label>Tittel</label><input type="text" placeholder="F.eks. Betong EC2 — søyler"></div>
+    <div class="field"><label>Google Drive-lenke</label><input type="url" placeholder="https://drive.google.com/file/d/..."></div>
+    <div class="field"><label>Fagkategori</label><select><option>Statikk</option><option>Mekanikk</option><option>Betong</option><option>Stål</option><option>Tre</option><option>Eksamen</option></select></div>
+    <div class="field"><label>Krever plan</label><select><option>Gratis (alle)</option><option>Basis (79 kr)</option><option>Student (179 kr)</option><option>Ingeniør Pro (379 kr)</option></select></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-addpdf')">Avbryt</button>
+      <button class="btn-confirm" onclick="addPdf()">Legg til PDF ✓</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Section navigation
+const allSections = ['dashboard','members','bookings','pdfs','drive','revenue','settings'];
+function showSection(id, btn){
+  allSections.forEach(s=>document.getElementById('section-'+s).style.display=s===id?'block':'none');
+  document.getElementById('page-title').textContent = {
+    dashboard:'Dashboard',members:'Medlemmer',bookings:'Bookinger',
+    pdfs:'PDF-bibliotek',drive:'Google Drive',revenue:'Inntekter',settings:'Innstillinger'
+  }[id]||id;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+// Bar chart
+window.addEventListener('load',()=>{
+  const data = [{v:1200,l:'Jan'},{v:1580,l:'Feb'},{v:3400,l:'Mar'},{v:2358,l:'Apr'}];
+  const max = Math.max(...data.map(d=>d.v));
+  const chart = document.getElementById('chart');
+  if(!chart) return;
+  chart.innerHTML = data.map(d=>`
+    <div class="bar-col">
+      <div class="bar-val">${(d.v/1000).toFixed(1)}k</div>
+      <div class="bar" style="height:${Math.round((d.v/max)*80)}px;background:${d.l==='Apr'?'var(--accent)':'rgba(195,90,42,0.3)'}" title="${d.v} kr"></div>
+    </div>
+  `).join('');
+});
+
+// Modals
+function openModal(id){document.getElementById('modal-'+id).classList.add('open')}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open')}
+function closeModalOutside(e,id){if(e.target.id==='modal-'+id)closeModal(id)}
+
+// Toast
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// Actions
+function approveMember(name){
+  showToast('✅ '+name+' er godkjent! E-post med tilgang sendt automatisk.');
+}
+function sendEmail(){
+  closeModal('modal-email');
+  showToast('✅ E-post sendt til alle aktive medlemmer!');
+}
+function addPdf(){
+  closeModal('modal-addpdf');
+  showToast('✅ PDF lagt til i biblioteket! Synlig for studenter nå.');
+}
+</script>
+</body>
+</html>

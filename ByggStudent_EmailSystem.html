@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ByggStudent.no — E-postsystem</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f2ec;--bg2:#ede9e1;--ink:#1a1a18;--ink2:#3d3d38;--muted:#8a8a80;
+  --accent:#c35a2a;--accent2:#e07a4a;--surface:#fff;--border:rgba(26,26,24,0.1);
+  --green:#16a34a;--blue:#1d4ed8;
+}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+nav{background:var(--ink);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;color:white}
+.nav-logo span{color:var(--accent2)}
+.nav-links{display:flex;gap:1rem}
+.nav-links a{font-size:0.8rem;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:white}
+
+.hero{background:var(--ink);padding:3rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'EMAIL';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-size:12rem;font-weight:800;color:rgba(255,255,255,0.02);pointer-events:none;white-space:nowrap}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(195,90,42,0.15);border:1px solid rgba(195,90,42,0.3);color:var(--accent2);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;padding:0.35rem 0.85rem;border-radius:50px;margin-bottom:1.2rem}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:800;color:white;letter-spacing:-0.04em;line-height:1.1;margin-bottom:0.75rem}
+.hero h1 span{color:var(--accent2)}
+.hero p{font-size:0.95rem;color:rgba(255,255,255,0.5);max-width:520px;margin:0 auto;line-height:1.7;font-weight:300}
+
+.main{max-width:1100px;margin:0 auto;padding:3rem 2rem}
+
+/* FLOW */
+.flow{display:flex;align-items:center;gap:0;margin-bottom:3rem;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.flow-step{flex:1;padding:1.4rem 1.2rem;text-align:center;position:relative}
+.flow-step::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-size:1.1rem;color:var(--muted);z-index:1}
+.flow-step:last-child::after{display:none}
+.flow-step:hover{background:var(--bg)}
+.flow-icon{font-size:1.6rem;margin-bottom:0.5rem}
+.flow-title{font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--ink);margin-bottom:0.2rem}
+.flow-desc{font-size:0.72rem;color:var(--muted);line-height:1.4}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:2rem}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.card-head{padding:1.1rem 1.3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.card-head-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.card-head-icon.orange{background:rgba(195,90,42,0.1)}
+.card-head-icon.green{background:rgba(22,163,74,0.1)}
+.card-head-icon.blue{background:rgba(29,78,216,0.08)}
+.card-head-icon.amber{background:rgba(245,158,11,0.1)}
+.card-title{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:-0.02em}
+.card-body{padding:1.2rem 1.3rem}
+
+/* TOOL OPTION */
+.tool{display:flex;align-items:flex-start;gap:14px;padding:1rem;border:1.5px solid var(--border);border-radius:12px;margin-bottom:0.85rem;cursor:pointer;transition:all 0.2s}
+.tool:hover{border-color:rgba(195,90,42,0.3);background:rgba(195,90,42,0.02)}
+.tool.recommended{border-color:rgba(195,90,42,0.4);background:rgba(195,90,42,0.03)}
+.tool-logo{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.tool-info{flex:1}
+.tool-name{font-weight:600;font-size:0.9rem;display:flex;align-items:center;gap:8px;margin-bottom:0.25rem}
+.rec-badge{background:var(--accent);color:white;font-size:0.62rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px;letter-spacing:0.05em}
+.free-badge{background:rgba(22,163,74,0.1);color:var(--green);font-size:0.62rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px;border:1px solid rgba(22,163,74,0.2)}
+.tool-desc{font-size:0.8rem;color:var(--muted);line-height:1.5}
+.tool-link{font-size:0.75rem;color:var(--accent);font-weight:500;margin-top:0.3rem;display:inline-block}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:14px;padding:0.85rem 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:white;font-size:0.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Syne',sans-serif;margin-top:1px}
+.step-content{flex:1}
+.step-title{font-size:0.87rem;font-weight:600;color:var(--ink);margin-bottom:0.25rem}
+.step-desc{font-size:0.8rem;color:var(--muted);line-height:1.55}
+.step-code{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.75rem;font-family:monospace;font-size:0.77rem;color:var(--ink2);margin-top:0.4rem;word-break:break-all}
+
+/* EMAIL PREVIEW */
+.email-preview{border:1px solid var(--border);border-radius:12px;overflow:hidden;font-family:'Instrument Sans',sans-serif}
+.email-chrome{background:var(--bg2);padding:0.6rem 1rem;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.chrome-dots{display:flex;gap:5px}
+.chrome-dot{width:10px;height:10px;border-radius:50%}
+.email-meta{padding:0.85rem 1.2rem;border-bottom:1px solid var(--border);font-size:0.8rem}
+.email-meta-row{display:flex;gap:8px;margin-bottom:3px;color:var(--muted)}
+.email-meta-row strong{color:var(--ink);font-weight:500;min-width:50px}
+.email-body{padding:0}
+
+/* STUDENT EMAIL */
+.em-student{background:#fff}
+.em-header{background:var(--ink);padding:2rem;text-align:center}
+.em-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:white}
+.em-logo span{color:var(--accent2)}
+.em-body{padding:2rem}
+.em-greeting{font-size:1rem;font-weight:600;color:var(--ink);margin-bottom:1rem}
+.em-text{font-size:0.87rem;color:var(--ink2);line-height:1.7;margin-bottom:1rem}
+.em-box{background:var(--bg);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:0.9rem 1rem;margin:1rem 0;font-size:0.84rem}
+.em-box-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:600;margin-bottom:0.3rem}
+.em-box-val{font-weight:600;color:var(--ink)}
+.em-btn{display:inline-block;background:var(--accent);color:white;padding:0.75rem 1.8rem;border-radius:8px;text-decoration:none;font-weight:600;font-size:0.88rem;margin:0.75rem 0}
+.em-footer{background:var(--bg2);padding:1.2rem;text-align:center;font-size:0.75rem;color:var(--muted);border-top:1px solid var(--border)}
+
+/* ADMIN EMAIL */
+.em-admin{background:#fff}
+.em-admin-header{background:var(--ink);padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.em-admin-title{font-family:'Syne',sans-serif;font-weight:800;font-size:0.9rem;color:white}
+.em-admin-badge{background:var(--accent);color:white;font-size:0.68rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:50px}
+.em-admin-body{padding:1.5rem}
+.em-admin-alert{background:rgba(195,90,42,0.07);border:1px solid rgba(195,90,42,0.2);border-radius:8px;padding:0.85rem 1rem;margin-bottom:1rem;font-size:0.84rem}
+.em-admin-alert-title{font-weight:700;color:var(--accent);margin-bottom:0.5rem;font-size:0.85rem}
+.em-detail-row{display:flex;justify-content:space-between;font-size:0.8rem;padding:0.3rem 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+.em-detail-row:last-child{border-bottom:none}
+.em-detail-label{color:var(--muted)}
+.em-detail-val{font-weight:600;color:var(--ink)}
+.em-admin-actions{display:flex;gap:0.6rem;margin-top:1rem}
+.em-action-btn{flex:1;padding:0.6rem;border-radius:6px;text-align:center;font-size:0.8rem;font-weight:600;text-decoration:none}
+.em-action-btn.approve{background:var(--accent);color:white}
+.em-action-btn.view{background:var(--bg2);color:var(--ink);border:1px solid var(--border)}
+
+/* TABS */
+.tabs{display:flex;gap:0.4rem;margin-bottom:1.2rem;background:var(--bg2);border-radius:10px;padding:4px}
+.tab{flex:1;text-align:center;padding:0.5rem;border-radius:7px;font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.2s;color:var(--muted);border:none;background:none;font-family:'Instrument Sans',sans-serif}
+.tab.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+
+/* ZAPIER BOX */
+.zap-box{background:rgba(255,90,0,0.04);border:1px solid rgba(255,90,0,0.15);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1rem}
+.zap-header{display:flex;align-items:center;gap:10px;margin-bottom:0.85rem}
+.zap-icon{font-size:1.3rem}
+.zap-title{font-weight:700;font-size:0.9rem;color:var(--ink)}
+.zap-sub{font-size:0.75rem;color:var(--muted)}
+.zap-flow{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem}
+.zap-node{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;font-weight:600;color:var(--ink)}
+.zap-arrow{color:var(--muted);font-size:0.9rem}
+.zap-node.trigger{border-color:rgba(255,90,0,0.3);color:#e85d00}
+.zap-node.action{border-color:rgba(195,90,42,0.3);color:var(--accent)}
+
+/* COST TABLE */
+.cost-table{width:100%;border-collapse:collapse;font-size:0.84rem}
+.cost-table th{text-align:left;padding:0.5rem 0.75rem;font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border)}
+.cost-table td{padding:0.65rem 0.75rem;border-bottom:1px solid rgba(0,0,0,0.04)}
+.cost-table tr:last-child td{border-bottom:none;font-weight:600}
+.cost-free{color:var(--green);font-weight:600}
+.cost-paid{color:var(--accent);font-weight:600}
+
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--ink);color:white;padding:0.8rem 1.2rem;border-radius:10px;font-size:0.84rem;font-weight:500;z-index:1000;transform:translateY(70px);opacity:0;transition:all 0.3s}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}.flow{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Bygg<span>Student</span>.no</div>
+  <div class="nav-links">
+    <a href="ByggStudent_no.html">Nettside</a>
+    <a href="ByggStudent_Admin.html">Admin</a>
+    <a href="ByggStudent_Dashboard.html">Dashboard</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">📧 Automatiske e-poster</div>
+  <h1>E-postsystemet ditt<br><span>fungerer mens du sover</span></h1>
+  <p>Når en student registrerer seg, betaler eller booker time — skjer alt automatisk. Du slipper å skrive én e-post manuelt.</p>
+</div>
+
+<div class="main">
+
+  <!-- FLOW -->
+  <div style="margin-bottom:1rem;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase">Slik fungerer flyten</div>
+  <div class="flow" style="margin-bottom:2.5rem">
+    <div class="flow-step"><div class="flow-icon">🖱️</div><div class="flow-title">Student registrerer seg</div><div class="flow-desc">Fyller ut skjema på nettsiden</div></div>
+    <div class="flow-step"><div class="flow-icon">⚡</div><div class="flow-title">Automatisk trigger</div><div class="flow-desc">EmailJS / Zapier fanget opp</div></div>
+    <div class="flow-step"><div class="flow-icon">📧</div><div class="flow-title">2 e-poster sendes</div><div class="flow-desc">Til studenten OG til deg</div></div>
+    <div class="flow-step"><div class="flow-icon">✅</div><div class="flow-title">Du godkjenner</div><div class="flow-desc">1 klikk i admin-panelet</div></div>
+    <div class="flow-step"><div class="flow-icon">🔓</div><div class="flow-title">Student får tilgang</div><div class="flow-desc">Automatisk betalingslenke</div></div>
+  </div>
+
+  <!-- VERKTØY -->
+  <div style="margin-bottom:1rem;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase">Anbefalt verktøy</div>
+  <div class="grid-2" style="margin-bottom:2.5rem">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-icon orange">⚡</div>
+        <div class="card-title">For enkle e-poster — EmailJS</div>
+      </div>
+      <div class="card-body">
+        <div class="tool recommended">
+          <div class="tool-logo" style="background:rgba(195,90,42,0.08)">📨</div>
+          <div class="tool-info">
+            <div class="tool-name">EmailJS <span class="rec-badge">Anbefalt</span> <span class="free-badge">Gratis</span></div>
+            <div class="tool-desc">Sender e-post direkte fra nettsiden din uten backend. Perfekt for registreringer og bookinger. Gratis opp til 200 e-poster/mnd.</div>
+            <div class="tool-link">→ emailjs.com</div>
+          </div>
+        </div>
+        <div class="tool">
+          <div class="tool-logo" style="background:rgba(29,78,216,0.06)">📮</div>
+          <div class="tool-info">
+            <div class="tool-name">Formspree <span class="free-badge">Gratis</span></div>
+            <div class="tool-desc">Alternativ til EmailJS. Kobler skjemaet ditt til e-post med én linje kode. Enkel oppsett.</div>
+            <div class="tool-link">→ formspree.io</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-icon amber">🔗</div>
+        <div class="card-title">For avansert automatisering — Zapier</div>
+      </div>
+      <div class="card-body">
+        <div class="zap-box">
+          <div class="zap-header">
+            <div class="zap-icon">⚡</div>
+            <div><div class="zap-title">Zapier — kobler alt sammen</div><div class="zap-sub">Gratis opp til 100 handlinger/mnd</div></div>
+          </div>
+          <div class="zap-flow">
+            <div class="zap-node trigger">Skjema sendt</div>
+            <div class="zap-arrow">→</div>
+            <div class="zap-node action">E-post til student</div>
+            <div class="zap-arrow">→</div>
+            <div class="zap-node action">E-post til deg</div>
+            <div class="zap-arrow">→</div>
+            <div class="zap-node action">Legg i Google Sheets</div>
+          </div>
+        </div>
+        <div class="tool">
+          <div class="tool-logo" style="background:rgba(245,158,11,0.08)">📊</div>
+          <div class="tool-info">
+            <div class="tool-name">Google Sheets som database <span class="free-badge">Gratis</span></div>
+            <div class="tool-desc">Alle nye registreringer lagres automatisk i et Google-ark. Du har full oversikt uten å logge inn i admin.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPPSETT EMAILJS -->
+  <div style="margin-bottom:1rem;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase">Steg-for-steg oppsett med EmailJS</div>
+  <div class="grid-2" style="margin-bottom:2.5rem">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-icon orange">⚙️</div>
+        <div class="card-title">Oppsett — 15 minutter</div>
+      </div>
+      <div class="card-body" style="padding:0.75rem 1rem">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-title">Opprett gratis konto på EmailJS</div>
+              <div class="step-desc">Gå til <strong>emailjs.com</strong> → Sign Up → velg Gmail som e-posttjeneste og koble til din Outlook/Hotmail</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-title">Lag to e-postmaler</div>
+              <div class="step-desc">Én mal for studenten (velkomst-e-post) og én for deg (varsel om ny registrering). Bruk variablene <code style="background:var(--bg2);padding:1px 5px;border-radius:3px;font-size:0.75rem">{{navn}}</code>, <code style="background:var(--bg2);padding:1px 5px;border-radius:3px;font-size:0.75rem">{{plan}}</code></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-title">Kopier API-nøklene dine</div>
+              <div class="step-desc">Fra EmailJS dashboard: kopier <strong>Public Key</strong>, <strong>Service ID</strong> og <strong>Template ID</strong></div>
+              <div class="step-code">emailjs.init("DIN_PUBLIC_KEY")</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-title">Lim inn koden i nettsiden din</div>
+              <div class="step-desc">Legg til script-taggen i HTML og kall funksjonen når skjemaet sendes. Se kode-eksempelet til høyre →</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <div class="step-title">Test med din egen e-post</div>
+              <div class="step-desc">Fyll ut skjemaet selv og sjekk at du mottar begge e-postene. Ferdig!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-icon blue">💻</div>
+        <div class="card-title">Kode-eksempel</div>
+      </div>
+      <div class="card-body">
+        <pre style="background:var(--ink);color:#e0e0da;border-radius:10px;padding:1.1rem;font-size:0.72rem;line-height:1.7;overflow-x:auto;font-family:monospace"><span style="color:#e07a4a">// 1. Legg til i &lt;head&gt;</span>
+&lt;script src="https://cdn.emailjs.com/
+  dist/email.min.js"&gt;&lt;/script&gt;
+
+<span style="color:#e07a4a">// 2. Initialiser</span>
+emailjs.init(<span style="color:#86d9a0">"DIN_PUBLIC_KEY"</span>);
+
+<span style="color:#e07a4a">// 3. Send e-poster ved registrering</span>
+<span style="color:#7bb8f5">function</span> <span style="color:#e0e0da">sendEmails</span>(navn, epost, plan) {
+
+  <span style="color:#e07a4a">// E-post til studenten</span>
+  emailjs.send(
+    <span style="color:#86d9a0">"SERVICE_ID"</span>,
+    <span style="color:#86d9a0">"TEMPLATE_STUDENT"</span>,
+    { navn, epost, plan,
+      betalingslenke: getPayLink(plan) }
+  );
+
+  <span style="color:#e07a4a">// Varsel til deg (Claudio)</span>
+  emailjs.send(
+    <span style="color:#86d9a0">"SERVICE_ID"</span>,
+    <span style="color:#86d9a0">"TEMPLATE_ADMIN"</span>,
+    { navn, epost, plan,
+      tid: <span style="color:#7bb8f5">new</span> Date().toLocaleString(<span style="color:#86d9a0">"no-NO"</span>) }
+  );
+}
+
+<span style="color:#e07a4a">// 4. Kall funksjonen fra skjemaet</span>
+<span style="color:#7bb8f5">function</span> <span style="color:#e0e0da">sendRegistration</span>() {
+  <span style="color:#7bb8f5">const</span> navn = getElementById(<span style="color:#86d9a0">"reg-name"</span>).value;
+  <span style="color:#7bb8f5">const</span> epost = getElementById(<span style="color:#86d9a0">"reg-email"</span>).value;
+  <span style="color:#7bb8f5">const</span> plan = getElementById(<span style="color:#86d9a0">"reg-plan"</span>).value;
+  sendEmails(navn, epost, plan);
+}</pre>
+        <div style="margin-top:0.85rem;background:rgba(22,163,74,0.06);border:1px solid rgba(22,163,74,0.15);border-radius:8px;padding:0.75rem 0.9rem;font-size:0.78rem;color:var(--ink2);line-height:1.5">
+          ✅ <strong>Ingen server nødvendig</strong> — alt kjører direkte fra HTML-filen. Du trenger ikke programmering-kunnskap for å sette dette opp.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E-POST MALER PREVIEW -->
+  <div style="margin-bottom:1rem;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase">Forhåndsvisning av e-postene</div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showEmail('student',this)">📧 E-post til student (velkomst)</button>
+    <button class="tab" onclick="showEmail('booking-student',this)">📅 Bookingbekreftelse til student</button>
+    <button class="tab" onclick="showEmail('admin',this)">🔔 Varsel til deg (Claudio)</button>
+    <button class="tab" onclick="showEmail('booking-admin',this)">📅 Booking-varsel til deg</button>
+  </div>
+
+  <!-- Student velkomst -->
+  <div id="email-student">
+    <div class="email-preview">
+      <div class="email-chrome"><div class="chrome-dots"><div class="chrome-dot" style="background:#ff5f57"></div><div class="chrome-dot" style="background:#febc2e"></div><div class="chrome-dot" style="background:#28c840"></div></div></div>
+      <div class="email-meta">
+        <div class="email-meta-row"><strong>Fra:</strong> ByggStudent.no &lt;noreply@byggstudent.no&gt;</div>
+        <div class="email-meta-row"><strong>Til:</strong> ole@student.no</div>
+        <div class="email-meta-row"><strong>Emne:</strong> 🎓 Velkommen til ByggStudent.no, Ole!</div>
+      </div>
+      <div class="email-body em-student">
+        <div class="em-header">
+          <div class="em-logo">Bygg<span>Student</span>.no</div>
+        </div>
+        <div class="em-body">
+          <div class="em-greeting">Hei Ole! 👋</div>
+          <div class="em-text">Takk for at du har registrert deg på ByggStudent.no. Vi er glade for å ha deg med!</div>
+          <div class="em-text">Din registrering er mottatt og vil bli behandlet innen <strong>2 timer</strong>. Etter bekreftelse mottar du en betalingslenke og får full tilgang til faginnholdet.</div>
+          <div class="em-box">
+            <div class="em-box-label">Din plan</div>
+            <div class="em-box-val">Student — 179 kr/mnd</div>
+          </div>
+          <div class="em-box">
+            <div class="em-box-label">Betalingsmåte</div>
+            <div class="em-box-val">PayPal</div>
+          </div>
+          <div class="em-text">Har du spørsmål? Svar direkte på denne e-posten.</div>
+          <div>
+            <a class="em-btn" href="#">Se hva du får tilgang til →</a>
+          </div>
+          <div class="em-text" style="font-size:0.8rem;color:var(--muted)">Med vennlig hilsen,<br><strong style="color:var(--ink)">Claudio Gomez</strong><br>ByggStudent.no · Grimstad</div>
+        </div>
+        <div class="em-footer">© 2025 ByggStudent.no · <a href="#" style="color:var(--muted)">Meld deg av</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking student -->
+  <div id="email-booking-student" style="display:none">
+    <div class="email-preview">
+      <div class="email-chrome"><div class="chrome-dots"><div class="chrome-dot" style="background:#ff5f57"></div><div class="chrome-dot" style="background:#febc2e"></div><div class="chrome-dot" style="background:#28c840"></div></div></div>
+      <div class="email-meta">
+        <div class="email-meta-row"><strong>Fra:</strong> ByggStudent.no &lt;noreply@byggstudent.no&gt;</div>
+        <div class="email-meta-row"><strong>Til:</strong> ole@student.no</div>
+        <div class="email-meta-row"><strong>Emne:</strong> 📅 Privattime bekreftet — Mandag 28. april kl. 18:00</div>
+      </div>
+      <div class="email-body em-student">
+        <div class="em-header"><div class="em-logo">Bygg<span>Student</span>.no</div></div>
+        <div class="em-body">
+          <div class="em-greeting">Hei Ole! Din privattime er bekreftet ✅</div>
+          <div class="em-text">Gleder meg til å hjelpe deg med <strong>Statikk & Likevekt</strong>. Her er detaljene:</div>
+          <div class="em-box"><div class="em-box-label">Dato og tid</div><div class="em-box-val">Mandag 28. april kl. 18:00–19:00</div></div>
+          <div class="em-box"><div class="em-box-label">Plattform</div><div class="em-box-val">Microsoft Teams (lenke under)</div></div>
+          <div class="em-box"><div class="em-box-label">Fag</div><div class="em-box-val">Statikk & Likevekt</div></div>
+          <div><a class="em-btn" href="#">Bli med i Teams-møtet →</a></div>
+          <div class="em-text" style="font-size:0.8rem;color:var(--muted)">Husk å ha oppgavene klare på forhånd. Ta gjerne en skjermdump av det du sitter fast på.<br><br>Med vennlig hilsen,<br><strong style="color:var(--ink)">Claudio Gomez</strong></div>
+        </div>
+        <div class="em-footer">© 2025 ByggStudent.no</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin varsel -->
+  <div id="email-admin" style="display:none">
+    <div class="email-preview">
+      <div class="email-chrome"><div class="chrome-dots"><div class="chrome-dot" style="background:#ff5f57"></div><div class="chrome-dot" style="background:#febc2e"></div><div class="chrome-dot" style="background:#28c840"></div></div></div>
+      <div class="email-meta">
+        <div class="email-meta-row"><strong>Fra:</strong> ByggStudent.no &lt;system@byggstudent.no&gt;</div>
+        <div class="email-meta-row"><strong>Til:</strong> claudio@outlook.com</div>
+        <div class="email-meta-row"><strong>Emne:</strong> 🆕 Ny registrering — Ole Studentsen (Student 179 kr)</div>
+      </div>
+      <div class="email-body em-admin">
+        <div class="em-admin-header">
+          <div class="em-admin-title">🔔 Ny registrering mottatt</div>
+          <div class="em-admin-badge">HANDLING KREVES</div>
+        </div>
+        <div class="em-admin-body">
+          <div class="em-admin-alert">
+            <div class="em-admin-alert-title">👤 Ny bruker ønsker tilgang</div>
+            <div class="em-detail-row"><span class="em-detail-label">Navn</span><span class="em-detail-val">Ole Studentsen</span></div>
+            <div class="em-detail-row"><span class="em-detail-label">E-post</span><span class="em-detail-val">ole@student.no</span></div>
+            <div class="em-detail-row"><span class="em-detail-label">Plan</span><span class="em-detail-val">Student — 179 kr/mnd</span></div>
+            <div class="em-detail-row"><span class="em-detail-label">Betalingsmåte</span><span class="em-detail-val">PayPal</span></div>
+            <div class="em-detail-row"><span class="em-detail-label">Tidspunkt</span><span class="em-detail-val">24. april 2025 kl. 19:47</span></div>
+          </div>
+          <div style="font-size:0.83rem;color:var(--ink2);margin-bottom:0.85rem;line-height:1.6">Gå til admin-panelet for å godkjenne tilgangen og sende betalingslenke til studenten.</div>
+          <div class="em-admin-actions">
+            <a class="em-action-btn approve" href="#">✓ Gå til admin og godkjenn</a>
+            <a class="em-action-btn view" href="#">📧 Svar direkte</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking admin -->
+  <div id="email-booking-admin" style="display:none">
+    <div class="email-preview">
+      <div class="email-chrome"><div class="chrome-dots"><div class="chrome-dot" style="background:#ff5f57"></div><div class="chrome-dot" style="background:#febc2e"></div><div class="chrome-dot" style="background:#28c840"></div></div></div>
+      <div class="email-meta">
+        <div class="email-meta-row"><strong>Fra:</strong> ByggStudent.no &lt;system@byggstudent.no&gt;</div>
+        <div class="email-meta-row"><strong>Til:</strong> claudio@outlook.com</div>
+        <div class="email-meta-row"><strong>Emne:</strong> 📅 Ny bookingforespørsel — Anders Hansen · Fredag 2. mai</div>
+      </div>
+      <div class="email-body em-admin">
+        <div class="em-admin-header">
+          <div class="em-admin-title">📅 Ny bookingforespørsel</div>
+          <div class="em-admin-badge">SVAR INNEN 2T</div>
+        </div>
+        <div class="em-admin-body">
+          <div class="em-admin-alert">
+            <div class="em-admin-alert-title">🗓️ Time ønsket</div>
+            <div class="em-detail-row"><span class="em-detail-label">Student</span><span class="em-detail-val">Anders Hansen</span></div>
+            <div class="em-detail-row"><span class="em-detail-label">E-post</span><span class="em-detail-val">anders@uia.no</span></div>
+            <div class="em-detail-row"><span class="em-detail-label">Dato</span><span class="em-detail-val">Fredag 2. mai kl. 19:00</span></div>
+            <div class="em-detail-row"><span class="em-detail-label">Fag</span><span class="em-detail-val">Mekanikk & Bøyning</span></div>
+            <div class="em-detail-row"><span class="em-detail-label">Betaling</span><span class="em-detail-val">400 kr · Vipps</span></div>
+            <div class="em-detail-row"><span class="em-detail-label">Spørsmål</span><span class="em-detail-val">Sitter fast på bøyningsmoment oppg. 16.6</span></div>
+          </div>
+          <div class="em-admin-actions">
+            <a class="em-action-btn approve" href="#">✓ Bekreft og send Vipps-lenke</a>
+            <a class="em-action-btn view" href="#">✕ Foreslå annen tid</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KOSTNAD -->
+  <div style="margin-top:2.5rem;margin-bottom:1rem;font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase">Hva koster det?</div>
+  <div class="card">
+    <div class="card-body">
+      <table class="cost-table">
+        <thead><tr><th>Tjeneste</th><th>Hva den gjør</th><th>Pris</th></tr></thead>
+        <tbody>
+          <tr><td><strong>EmailJS</strong></td><td>Sender e-poster automatisk (opp til 200/mnd)</td><td class="cost-free">GRATIS</td></tr>
+          <tr><td><strong>Formspree</strong></td><td>Alternativ — e-post fra skjema (50/mnd)</td><td class="cost-free">GRATIS</td></tr>
+          <tr><td><strong>Zapier</strong></td><td>Kobler skjema → e-post → Google Sheets (100 runs/mnd)</td><td class="cost-free">GRATIS</td></tr>
+          <tr><td><strong>Google Sheets</strong></td><td>Database med alle registreringer</td><td class="cost-free">GRATIS</td></tr>
+          <tr><td><strong>Google Drive</strong></td><td>Lagring av PDF-filer (15 GB inkludert)</td><td class="cost-free">GRATIS</td></tr>
+          <tr><td colspan="2"><strong>Total månedskostnad for e-postsystemet</strong></td><td class="cost-free" style="font-size:1rem">0 kr</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showEmail(id, btn){
+  ['student','booking-student','admin','booking-admin'].forEach(e=>{
+    document.getElementById('email-'+e).style.display = e===id?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>
