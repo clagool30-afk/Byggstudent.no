@@ -648,7 +648,7 @@ const EMAILJS_TEMPLATE_STUDENT = 'yubj2am';
 const EMAILJS_TEMPLATE_ADMIN = 'u9b2ipr';
 
 // Initialiser
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 // ─── PLAN-MODAL ───
@@ -697,7 +697,7 @@ async function sendRegistration(){
 
   try {
     // 1. Lagre i Supabase
-    const {error} = await supabase.from('brukere').insert({
+    const {error} = await sbClient.from('brukere').insert({
       navn, epost, plan, aktiv: false
     });
 
@@ -750,9 +750,9 @@ async function sendBooking(){
 
   try {
     // Lagre booking i Supabase
-    const {data: bruker} = await supabase.from('brukere').select('id').eq('epost',epost).single();
+    const {data: bruker} = await sbClient.from('brukere').select('id').eq('epost',epost).single();
 
-    await supabase.from('bookinger').insert({
+    await sbClient.from('bookinger').insert({
       bruker_id: bruker?.id || null,
       dato: dato + 'T' + tid,
       fag, melding, betalt: false, status: 'venter'
