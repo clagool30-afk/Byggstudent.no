@@ -710,12 +710,21 @@ async function sendRegistration(){
 
     // 2. E-post til studenten
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_STUDENT, {
-      navn, email: epost, plan, betaling: betalingsinfo
+      to_name: navn,
+      to_email: epost,
+      plan: plan,
+      betaling: betalingsinfo
     });
 
     // 3. Varsel til Claudio
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ADMIN, {
-      navn, epost, plan, betaling, tid
+      to_name: 'Claudio',
+      to_email: 'clagool30@hotmail.com',
+      navn: navn,
+      epost: epost,
+      plan: plan,
+      betaling: betaling,
+      tid: tid
     });
 
     closeModal();
