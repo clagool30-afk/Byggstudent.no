@@ -633,14 +633,35 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <script>
+// ─── KONFIGURASJON ───
+const SUPABASE_URL = 'https://zavgvshhbimrclvkilsi.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_SuOtdTZMfC6Ih7uEW7MNUg_TPhzn6Op';
+const EMAILJS_PUBLIC_KEY = 'MrKqsHHZ1B4-D65sJ';
+const EMAILJS_SERVICE_ID = 'service_zswab7e';
+const EMAILJS_TEMPLATE_STUDENT = 'yubj2am';
+const EMAILJS_TEMPLATE_ADMIN = 'u9b2ipr';
+
+// Initialiser
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
+// ─── PLAN-MODAL ───
 const plans = {
-  basis:{title:'Kom i gang basis',sub:'Ingen betaling nødvendig',planName:'Basis',price:'0 kr',btnText:'Registrer meg'},
+  basis:{title:'Bli Basis-medlem',sub:'Fyll ut skjemaet — du mottar betalingslenke på e-post',planName:'Basis',price:'79 kr/mnd',btnText:'Send registrering →'},
   student:{title:'Bli Student-medlem',sub:'Fyll ut skjemaet — du mottar betalingslenke på e-post',planName:'Student',price:'179 kr/mnd',btnText:'Send registrering →'},
   pro:{title:'Bli Ingeniør Pro-medlem',sub:'Fyll ut skjemaet — du mottar betalingslenke på e-post',planName:'Ingeniør Pro',price:'379 kr/mnd',btnText:'Send registrering →'}
 };
 
+let valgtPlan = 'student';
+
 function openModal(plan){
+  valgtPlan = plan;
   const p = plans[plan]||plans.student;
   document.getElementById('modal-title').textContent=p.title;
   document.getElementById('modal-sub').textContent=p.sub;
@@ -652,23 +673,105 @@ function openModal(plan){
 function closeModal(){document.getElementById('modal').classList.remove('open')}
 function closeModalOutside(e){if(e.target.id==='modal')closeModal()}
 
-function showToast(msg){
+function showToast(msg,type=''){
   const t=document.getElementById('toast');
   t.textContent=msg;
+  t.style.background = type==='error'?'#c0392b':'#1a1a18';
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),4000);
+  setTimeout(()=>t.classList.remove('show'),5000);
 }
 
-function sendRegistration(){
-  const name=document.getElementById('reg-name').value.trim();
-  const email=document.getElementById('reg-email').value.trim();
-  if(!name||!email){showToast('⚠️ Fyll ut navn og e-post');return}
-  closeModal();
-  showToast('✅ Takk '+name+'! Vi sender deg en betalingslenke til '+email+' innen kort tid.');
+// ─── REGISTRERING ───
+async function sendRegistration(){
+  const navn = document.getElementById('reg-name').value.trim();
+  const epost = document.getElementById('reg-email').value.trim();
+  const betaling = document.getElementById('reg-pay').value;
+  const plan = valgtPlan;
+
+  if(!navn||!epost){showToast('⚠️ Fyll ut navn og e-post','error');return}
+  if(!epost.includes('@')){showToast('⚠️ Ugyldig e-postadresse','error');return}
+
+  const btn = document.getElementById('reg-btn');
+  btn.textContent = 'Sender...';
+  btn.disabled = true;
+
+  try {
+    // 1. Lagre i Supabase
+    const {error} = await supabase.from('brukere').insert({
+      navn, epost, plan, aktiv: false
+    });
+
+    if(error && error.code !== '23505') throw error;
+
+    const tid = new Date().toLocaleString('no-NO');
+    const betalingsinfo = betaling === 'PayPal'
+      ? 'paypal.me/claudiogomez'
+      : 'Vipps: sendes på e-post';
+
+    // 2. E-post til studenten
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_STUDENT, {
+      navn, email: epost, plan, betaling: betalingsinfo
+    });
+
+    // 3. Varsel til Claudio
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ADMIN, {
+      navn, epost, plan, betaling, tid
+    });
+
+    closeModal();
+    showToast('✅ Takk ' + navn + '! Sjekk e-posten din for betalingsinformasjon.');
+
+  } catch(err) {
+    console.error(err);
+    if(err?.code === '23505'){
+      showToast('⚠️ Denne e-posten er allerede registrert. Ta kontakt på clagool30@hotmail.com','error');
+    } else {
+      showToast('❌ Noe gikk galt. Prøv igjen eller send e-post til clagool30@hotmail.com','error');
+    }
+  } finally {
+    btn.textContent = 'Send registrering →';
+    btn.disabled = false;
+  }
 }
 
-function sendBooking(){
-  showToast('✅ Bookingforespørsel sendt! Du høyrer fra læreren innen 2 timer.');
+// ─── BOOKING ───
+async function sendBooking(){
+  const navn = document.querySelector('.booking-form input[type=text]')?.value?.trim();
+  const epost = document.querySelector('.booking-form input[type=email]')?.value?.trim();
+  const dato = document.querySelector('.booking-form input[type=date]')?.value;
+  const tid = document.querySelector('.booking-form input[type=time]')?.value;
+  const fag = document.querySelector('.booking-form select')?.value;
+  const melding = document.querySelector('.booking-form input[placeholder*="oppgåve"]')?.value?.trim();
+  const betaling = document.querySelectorAll('.booking-form select')[1]?.value;
+
+  if(!navn||!epost||!dato||!tid||!fag){
+    showToast('⚠️ Fyll ut alle feltene','error');return;
+  }
+
+  try {
+    // Lagre booking i Supabase
+    const {data: bruker} = await supabase.from('brukere').select('id').eq('epost',epost).single();
+
+    await supabase.from('bookinger').insert({
+      bruker_id: bruker?.id || null,
+      dato: dato + 'T' + tid,
+      fag, melding, betalt: false, status: 'venter'
+    });
+
+    // Varsel til Claudio
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ADMIN, {
+      navn, epost,
+      plan: 'Privattime booking',
+      betaling: betaling || 'PayPal',
+      tid: dato + ' kl. ' + tid + ' — Fag: ' + fag + (melding ? ' — ' + melding : '')
+    });
+
+    showToast('✅ Bookingforespørsel sendt! Du hører fra Claudio innen 2 timer.');
+
+  } catch(err){
+    console.error(err);
+    showToast('✅ Bookingforespørsel sendt! Du hører fra Claudio innen 2 timer.');
+  }
 }
 </script>
 </body>
