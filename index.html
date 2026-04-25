@@ -204,7 +204,7 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
 <!-- NAV -->
 <nav>
   <a class="logo" href="#">
-    <svg width="160" height="40" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg">
+    <svg width="280" height="70" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg">
       <rect x="0" y="0" width="320" height="80" rx="8" fill="#1a1a18"/>
       <rect x="0" y="0" width="320" height="3" fill="#c35a2a"/>
       <rect x="16" y="20" width="30" height="44" rx="3" fill="none" stroke="#c35a2a" stroke-width="2"/>
@@ -235,7 +235,7 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
 <section style="padding-top:64px">
   <div class="hero">
     <div class="hero-left">
-      <div class="eyebrow">Fagskolen & Høyskole · Bygg & konstruksjon</div>
+      <div class="eyebrow">Universitet, Høyskole &amp; Fagskolen · Bygg &amp; konstruksjon</div>
       <h1>Forstå <span class="line2">statikk</span> på ordentlig</h1>
       <p class="hero-desc">Alt fagstoff du trenger — statikk, betong, stål og tre — samlet på én plass. Løste oppgaver, PDF-bibliotek og privattimer med en erfaren ingeniørlærer.</p>
       <div class="hero-ctas">
@@ -349,8 +349,8 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
       </div>
       <div class="fag-card" data-no="06">
         <div class="fag-icon">📝</div>
-        <h3>Eksamensprep</h3>
-        <p>Gammal eksamen med fullstendige løsningsforslag fra VGS og fagskole — klar til øving.</p>
+        <h3>Eksamensforberedelse</h3>
+        <p>Universiteter, fagskoler og VGS — klar til øving. Tidligere eksamensoppgaver med fullstendige løsningsforslag, tips og gjennomgang av typiske oppgavetyper.</p>
         <div class="fag-count">📄 1 dokument</div>
       </div>
     </div>
@@ -702,6 +702,8 @@ function openModal(plan){
   document.getElementById('reg-btn').textContent=p.btnText;
   document.getElementById('modal').classList.add('open');
 }
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function closeModalOutside(e){if(e.target.id==='modal')closeModal()}
 function closeLogin(){document.getElementById('modal-login').classList.remove('open')}
 function openLogin(){document.getElementById('modal-login').classList.add('open')}
 
