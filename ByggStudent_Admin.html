@@ -280,25 +280,25 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
         <div class="stat">
           <div class="stat-icon">👥</div>
           <div class="stat-label">Totale medlemmer</div>
-          <div class="stat-val">8</div>
+          <div class="stat-val">0</div>
           <div class="stat-trend"><span class="trend-up">↑ +2</span><span class="trend-neutral">denne måneden</span></div>
         </div>
         <div class="stat">
           <div class="stat-icon">💰</div>
           <div class="stat-label">Månedlig inntekt</div>
-          <div class="stat-val">2<span>138</span> kr</div>
+          <div class="stat-val">0<span> kr</span></div>
           <div class="stat-trend"><span class="trend-up">↑ +358 kr</span><span class="trend-neutral">vs forrige mnd</span></div>
         </div>
         <div class="stat">
           <div class="stat-icon">📅</div>
           <div class="stat-label">Timer denne måneden</div>
-          <div class="stat-val">6</div>
-          <div class="stat-trend"><span class="trend-neutral">= 2 400 kr</span><span class="trend-neutral">privatimer</span></div>
+          <div class="stat-val">0</div>
+          <div class="stat-trend"><span class="trend-neutral">= 0 kr</span><span class="trend-neutral">privatimer</span></div>
         </div>
         <div class="stat">
           <div class="stat-icon">⏳</div>
           <div class="stat-label">Ventende godkjenning</div>
-          <div class="stat-val">2<span style="font-size:1rem;color:var(--amber)">!</span></div>
+          <div class="stat-val">0<span style="font-size:1rem;color:var(--amber)">!</span></div>
           <div class="stat-trend"><span class="trend-neutral">Klikk for å behandle</span></div>
         </div>
       </div>
@@ -323,34 +323,6 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
                   <td>179 kr</td>
                   <td><button class="action-btn" onclick="showToast('📧 E-post sendt til Ole!')">E-post</button></td>
                 </tr>
-                <tr>
-                  <td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">MN</div><div><div class="member-name">Maria Nilsen</div><div class="member-email">maria@fagskolen.no</div></div></div></td>
-                  <td><span class="plan-badge pro">Ingeniør Pro</span></td>
-                  <td><span class="status-dot active"></span>Aktiv</td>
-                  <td>379 kr</td>
-                  <td><button class="action-btn" onclick="showToast('📧 E-post sendt til Maria!')">E-post</button></td>
-                </tr>
-                <tr>
-                  <td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">AH</div><div><div class="member-name">Anders Hansen</div><div class="member-email">anders@uia.no</div></div></div></td>
-                  <td><span class="plan-badge basis">Basis</span></td>
-                  <td><span class="status-dot pending"></span>Venter</td>
-                  <td>79 kr</td>
-                  <td><button class="action-btn approve" onclick="approveMember('Anders Hansen')">Godkjenn</button></td>
-                </tr>
-                <tr>
-                  <td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">LB</div><div><div class="member-name">Lena Berg</div><div class="member-email">lena@hiof.no</div></div></div></td>
-                  <td><span class="plan-badge student">Student</span></td>
-                  <td><span class="status-dot pending"></span>Venter</td>
-                  <td>179 kr</td>
-                  <td><button class="action-btn approve" onclick="approveMember('Lena Berg')">Godkjenn</button></td>
-                </tr>
-                <tr>
-                  <td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">KJ</div><div><div class="member-name">Kristian Johansen</div><div class="member-email">kj@ntnu.no</div></div></div></td>
-                  <td><span class="plan-badge pro">Ingeniør Pro</span></td>
-                  <td><span class="status-dot active"></span>Aktiv</td>
-                  <td>379 kr</td>
-                  <td><button class="action-btn" onclick="showToast('📧 E-post sendt til Kristian!')">E-post</button></td>
-                </tr>
               </tbody>
             </table>
           </div>
@@ -364,8 +336,8 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
               <div class="panel-title">💰 Inntekter 2025</div>
             </div>
             <div class="panel-body">
-              <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--ink);margin-bottom:0.2rem">8 538 kr</div>
-              <div style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem">Total hittil i år</div>
+              <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--ink);margin-bottom:0.2rem">0 kr</div>
+              <div style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem">Ingen inntekter ennå</div>
               <div class="chart-wrap" id="chart"></div>
               <div style="display:flex;justify-content:space-between;margin-top:0.5rem">
                 <span style="font-size:0.68rem;color:var(--muted)">Jan</span>
@@ -544,10 +516,10 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
     </div>
     <div id="section-revenue" style="display:none">
       <div class="stats-grid">
-        <div class="stat"><div class="stat-label">Januar</div><div class="stat-val">1<span>200</span> kr</div></div>
-        <div class="stat"><div class="stat-label">Februar</div><div class="stat-val">1<span>580</span> kr</div></div>
-        <div class="stat"><div class="stat-label">Mars</div><div class="stat-val">2<span>400</span> kr</div></div>
-        <div class="stat"><div class="stat-label">April (hittil)</div><div class="stat-val">3<span>358</span> kr</div></div>
+        <div class="stat"><div class="stat-label">Januar</div><div class="stat-val">0<span> kr</span></div></div>
+        <div class="stat"><div class="stat-label">Februar</div><div class="stat-val">0<span> kr</span></div></div>
+        <div class="stat"><div class="stat-label">Mars</div><div class="stat-val">0<span> kr</span></div></div>
+        <div class="stat"><div class="stat-label">April (hittil)</div><div class="stat-val">0<span> kr</span></div></div>
       </div>
     </div>
     <div id="section-settings" style="display:none">
