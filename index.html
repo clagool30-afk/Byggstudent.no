@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -714,16 +713,21 @@ async function sendRegistration(){
     if(error && error.code !== '23505') throw error;
 
     const tid = new Date().toLocaleString('no-NO');
-    const betalingsinfo = betaling === 'PayPal'
-      ? 'paypal.me/claudiogomez'
-      : 'Vipps: sendes på e-post';
+    // Pris og PayPal lenke basert på plan
+    const prisMap = { basis: 79, student: 179, pro: 379 };
+    const pris = prisMap[plan] || 179;
+    const paypalLink = `https://www.paypal.me/claudiogomez/${pris}NOK`;
+    const vippsNr = '90918814';
 
     // 2. E-post til studenten
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_STUDENT, {
       to_name: navn,
       to_email: epost,
-      plan: plan,
-      betaling: betalingsinfo
+      plan: plan.charAt(0).toUpperCase() + plan.slice(1) + ' — ' + pris + ' kr/mnd',
+      paypal_link: paypalLink,
+      pris: pris,
+      vipps: vippsNr,
+      betaling: betaling
     });
 
     // 3. Varsel til Claudio
