@@ -596,7 +596,111 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ─── SUPABASE ADMIN ───
+const SUPABASE_URL = 'https://zavgvshhbimrclvkilsi.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inphdmd2c2hoYmltcmNsdmtpbHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMzk0OTAsImV4cCI6MjA5MjYxNTQ5MH0.XxkY_eEfIlJzdhj_bfd3Kh-0Jw-oeUitpbLjW6H_No8';
+const sbAdmin = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function lastAdminData() {
+  // Hent alle brukere
+  const { data: brukere } = await sbAdmin.from('brukere').select('*').order('opprettet', {ascending: false});
+  // Hent bookinger
+  const { data: bookinger } = await sbAdmin.from('bookinger').select('*').order('opprettet', {ascending: false});
+
+  if (brukere) {
+    // Oppdater stats
+    const totalt = brukere.length;
+    const ventende = brukere.filter(b => !b.aktiv).length;
+    const månedlig = brukere.filter(b=>b.aktiv).reduce((sum,b)=>{
+      return sum + ({basis:99,student:179,pro:379}[b.plan]||0);
+    }, 0);
+
+    // Oppdater stat-kort
+    const stats = document.querySelectorAll('.stat-val');
+    if(stats[0]) stats[0].textContent = totalt;
+    if(stats[1]) stats[1].innerHTML = (månedlig/1000).toFixed(1) + '<span>k kr</span>';
+    if(stats[3]) stats[3].innerHTML = ventende + '<span style="font-size:1rem;color:var(--amber)">!</span>';
+
+    // Oppdater tabell
+    const tbody = document.querySelector('.members-table tbody');
+    if (tbody) {
+      tbody.innerHTML = brukere.map(b => `
+        <tr>
+          <td><div style="display:flex;align-items:center;gap:8px">
+            <div class="member-av">${b.navn?.charAt(0)||'?'}</div>
+            <div><div class="member-name">${b.navn||'Ukjent'}</div>
+            <div class="member-email">${b.epost}</div></div>
+          </div></td>
+          <td><span class="plan-badge ${b.plan}">${b.plan||'basis'}</span></td>
+          <td><span class="status-dot ${b.aktiv?'active':'pending'}"></span>${b.aktiv?'Aktiv':'Venter'}</td>
+          <td>${{basis:99,student:179,pro:379}[b.plan]||0} kr</td>
+          <td>
+            ${!b.aktiv ? `<button class="action-btn approve" onclick="godkjennBruker('${b.id}','${b.navn}','${b.epost}')">✓ Godkjenn</button>` : 
+            `<button class="action-btn" onclick="showToast('📧 E-post sendt!')">E-post</button>`}
+          </td>
+        </tr>`).join('');
+    }
+
+    // Oppdater varsler
+    const ventendeBrukere = brukere.filter(b => !b.aktiv);
+    if(ventendeBrukere.length > 0) {
+      const notifPanel = document.querySelector('.panel-body[style*="padding:0.6rem"]');
+      if(notifPanel) {
+        notifPanel.innerHTML = ventendeBrukere.map(b => `
+          <div class="notif-item unread">
+            <div class="notif-icon member">👤</div>
+            <div class="notif-text">
+              <div class="notif-msg"><strong>${b.navn}</strong> har registrert seg — ${b.plan} plan</div>
+              <div class="notif-time">${new Date(b.opprettet).toLocaleString('no-NO')}</div>
+            </div>
+            <div class="unread-dot"></div>
+          </div>`).join('') || '<p style="font-size:0.83rem;color:var(--muted);padding:0.5rem 0">Ingen nye varsler</p>';
+      }
+    }
+  }
+
+  if (bookinger) {
+    const ventBookinger = bookinger.filter(b => b.status === 'venter').length;
+    const stats = document.querySelectorAll('.stat-val');
+    if(stats[2]) stats[2].textContent = bookinger.length;
+  }
+}
+
+async function godkjennBruker(id, navn, epost) {
+  const { error } = await sbAdmin.from('brukere').update({ aktiv: true }).eq('id', id);
+  if (!error) {
+    showToast('✅ ' + navn + ' er godkjent! Husk å sende betalingslenke til ' + epost);
+    lastAdminData(); // Refresh
+  } else {
+    showToast('❌ Feil ved godkjenning');
+  }
+}
+
+async function addPdfToDB() {
+  const tittel = document.querySelector('#modal-addpdf input[type=text]')?.value;
+  const url = document.querySelector('#modal-addpdf input[type=url]')?.value;
+  const kategori = document.querySelectorAll('#modal-addpdf select')[0]?.value?.toLowerCase();
+  const plan = document.querySelectorAll('#modal-addpdf select')[1]?.value?.toLowerCase().split(' ')[0];
+
+  if(!tittel||!url){showToast('⚠️ Fyll ut tittel og lenke');return}
+
+  const { error } = await sbAdmin.from('pdf_dokumenter').insert({
+    tittel, drive_url: url, kategori, krever_plan: plan
+  });
+
+  if(!error){
+    closeModal('modal-addpdf');
+    showToast('✅ PDF lagt til! Synlig for studenter nå.');
+  }
+}
+
+// Last data når siden åpnes
+window.addEventListener('load', () => {
+  lastAdminData();
+});
+
 // Section navigation
 const allSections = ['dashboard','members','bookings','pdfs','drive','revenue','settings'];
 function showSection(id, btn){
@@ -644,8 +748,7 @@ function sendEmail(){
   showToast('✅ E-post sendt til alle aktive medlemmer!');
 }
 function addPdf(){
-  closeModal('modal-addpdf');
-  showToast('✅ PDF lagt til i biblioteket! Synlig for studenter nå.');
+  addPdfToDB();
 }
 </script>
 </body>
