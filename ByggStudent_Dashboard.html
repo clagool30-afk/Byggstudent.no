@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -212,9 +211,9 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
     <div class="logo-text">Bygg<span>Student</span></div>
   </div>
   <div class="sidebar-user">
-    <div class="user-avatar">OS</div>
-    <div class="user-name">Ole Studentsen</div>
-    <div class="user-plan">⭐ Student-plan</div>
+    <div class="user-avatar" id="user-avatar">...</div>
+    <div class="user-name" id="user-name">Laster...</div>
+    <div class="user-plan" id="user-plan">⭐ Laster...</div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section">Oversikt</div>
@@ -275,8 +274,8 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
     <div id="section-dashboard">
       <div class="welcome-banner">
         <div class="welcome-text">
-          <h2>God ettermiddag, Ole! 👋</h2>
-          <p>Du har <span>1 privattime</span> bestilt og tilgang til <span>6 av 9 PDF-er</span></p>
+          <h2 id="welcome-h2">God dag! 👋</h2>
+          <p>Velkommen til ByggStudent.no — ditt fagbibliotek for ingeniørstudier</p>
         </div>
         <a class="banner-btn" href="#" onclick="showSection('bibliotek')">Gå til PDF-biblioteket →</a>
       </div>
@@ -743,10 +742,10 @@ async function initSupabase() {
         // Oppdater brukerinfo i sidebar
         const navn = bruker.navn || user.email.split('@')[0];
         const initials = navn.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
-        document.querySelector('.user-avatar').textContent = initials;
-        document.querySelector('.user-name').textContent = navn;
-        document.querySelector('.user-plan').textContent = '⭐ ' + (bruker.plan || 'basis');
-        document.querySelector('.welcome-text h2').textContent = 'God dag, ' + navn.split(' ')[0] + '! 👋';
+        document.getElementById('user-avatar').textContent = initials;
+        document.getElementById('user-name').textContent = navn;
+        document.getElementById('user-plan').textContent = '⭐ ' + (bruker.plan || 'basis').charAt(0).toUpperCase() + (bruker.plan || 'basis').slice(1) + '-plan';
+        document.getElementById('welcome-h2').textContent = 'God dag, ' + navn.split(' ')[0] + '! 👋';
 
         if (!bruker.aktiv) {
           showToast('⏳ Din konto er ikke aktivert ennå. Vi behandler betalingen din.');
