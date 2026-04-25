@@ -369,12 +369,12 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
       <!-- GRATIS -->
       <div class="price-card">
         <div class="price-tier">Basis</div>
-        <div class="price-amount">79<sub> kr/mnd</sub></div>
+        <div class="price-amount">99<sub> kr/mnd</sub></div>
         <div class="price-period">for alltid · ingen kortinfo</div>
         <ul class="price-features">
-          <li><span class="check">✓</span>3 basis PDF-dokument</li>
-          <li><span class="check">✓</span>Innblikk i faginnhaldet</li>
-          <li><span class="cross">—</span>Fullt PDF-bibliotek</li>
+          <li><span class="check">✓</span>3 utvalgte PDF-dokumenter</li>
+          <li><span class="check">✓</span>Innblikk i faginnholdet</li>
+          <li><span class="cross">—</span>Tilgang til full PDF-bibliotek</li>
 
           <li><span class="cross">—</span>Privattimer</li>
         </ul>
@@ -384,13 +384,13 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
       <div class="price-card star">
         <div class="star-label">Mest populær</div>
         <div class="price-tier">Student</div>
-        <div class="price-amount">179<sub> kr/mnd</sub></div>
+        <div class="price-amount">199<sub> kr/mnd</sub></div>
         <div class="price-period">tilsvarer 2 kaffekopper i uken ☕</div>
         <ul class="price-features">
-          <li><span class="check">✓</span>Ubegrenst tilgang til alle PDF-ar</li>
-          <li><span class="check">✓</span>Alle løsningsforslag og eksempel</li>
+          <li><span class="check">✓</span>Tilgang til opptil 20 utvalgte PDF-er</li>
+          <li><span class="check">✓</span>Utvalgte løsningsforslag og eksempler</li>
           <li><span class="check">✓</span>Eksamensforberedelse</li>
-          <li><span class="check">✓</span>1 privat time per måned inkl.</li>
+          <li><span class="check">✓</span>1 gratis privattime (30 min) per måned</li>
           <li><span class="check">✓</span>E-post support fra læreren</li>
         </ul>
         <a class="price-btn price-btn-fill" href="javascript:void(0)" onclick="openModal('student')">Bli Student-medlem</a>
@@ -398,11 +398,11 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
       <!-- PRO -->
       <div class="price-card">
         <div class="price-tier">Ingeniør Pro</div>
-        <div class="price-amount">379<sub> kr/mnd</sub></div>
+        <div class="price-amount">399<sub> kr/mnd</sub></div>
         <div class="price-period">for deg som vil ha alt</div>
         <ul class="price-features">
           <li><span class="check">✓</span>Alt i Student</li>
-          <li><span class="check">✓</span>2 privattimer per måned</li>
+          <li><span class="check">✓</span>2 gratis privattimer/mnd (verdi 800 kr)</li>
           <li><span class="check">✓</span>Prioritert booking av timer</li>
           <li><span class="check">✓</span>E-post support fra læreren</li>
           <li><span class="check">✓</span>Personlig studieplan</li>
@@ -714,7 +714,7 @@ async function sendRegistration(){
 
     const tid = new Date().toLocaleString('no-NO');
     // Pris og PayPal lenke basert på plan
-    const prisMap = { basis: 79, student: 179, pro: 379 };
+    const prisMap = { basis: 99, student: 179, pro: 379 };
     const pris = prisMap[plan] || 179;
     const paypalLink = `https://www.paypal.me/ClaudiByggstudent/${pris}NOK`;
     const vippsNr = '90918814';
