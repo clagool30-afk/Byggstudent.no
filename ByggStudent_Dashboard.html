@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -251,7 +252,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
       <p>Oppgrader til <strong style="color:white">Pro</strong> og få 2 privattimer + personlig studieplan</p>
       <button class="upgrade-btn" onclick="openUpgrade()">Oppgrader nå →</button>
     </div>
-    <button class="logout-btn">← Logg ut</button>
+    <button class="logout-btn" onclick="loggUt()">← Logg ut</button>
   </div>
 </aside>
 
@@ -640,6 +641,7 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const sections = ['dashboard','bibliotek','statikk','mekanikk','betong','stal','timer','profil'];
 const titles = {dashboard:'Dashboard',bibliotek:'PDF-bibliotek',statikk:'Statikk & Likevekt',mekanikk:'Mekanikk',betong:'Betongkonstruksjon',stal:'Stålkonstruksjon',timer:'Mine timer',profil:'Min profil'};
@@ -709,7 +711,141 @@ window.addEventListener('load',()=>{
     bar.style.width='0';
     setTimeout(()=>bar.style.width=w,300);
   });
+  initSupabase();
 });
+
+// ─── SUPABASE INTEGRASJON ───
+const SUPABASE_URL = 'https://zavgvshhbimrclvkilsi.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inphdmd2c2hoYmltcmNsdmtpbHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMzk0OTAsImV4cCI6MjA5MjYxNTQ5MH0.XxkY_eEfIlJzdhj_bfd3Kh-0Jw-oeUitpbLjW6H_No8';
+
+// Plan nivåer
+const PLAN_NIVAA = { gratis: 0, basis: 1, student: 2, pro: 3 };
+
+// Ikoner per kategori
+const KATEGORI_IKON = { statikk: '⚖️', mekanikk: '📐', betong: '🏗️', stal: '🔩', tre: '🌲', eksamen: '📝' };
+
+async function initSupabase() {
+  try {
+    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Sjekk innlogget bruker
+    const { data: { user } } = await sbClient.auth.getUser();
+
+    if (user) {
+      // Hent brukerinfo fra databasen
+      const { data: bruker } = await sbClient
+        .from('brukere')
+        .select('navn, plan, aktiv')
+        .eq('epost', user.email)
+        .single();
+
+      if (bruker) {
+        // Oppdater brukerinfo i sidebar
+        const navn = bruker.navn || user.email.split('@')[0];
+        const initials = navn.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+        document.querySelector('.user-avatar').textContent = initials;
+        document.querySelector('.user-name').textContent = navn;
+        document.querySelector('.user-plan').textContent = '⭐ ' + (bruker.plan || 'basis');
+        document.querySelector('.welcome-text h2').textContent = 'God dag, ' + navn.split(' ')[0] + '! 👋';
+
+        if (!bruker.aktiv) {
+          showToast('⏳ Din konto er ikke aktivert ennå. Vi behandler betalingen din.');
+        }
+
+        // Last inn PDF-biblioteket
+        await lastPDFBibliotek(sbClient, bruker.plan || 'gratis');
+      }
+    } else {
+      // Ikke innlogget — vis innloggingsskjema
+      visMeldingIkkeInnlogget();
+    }
+  } catch(err) {
+    console.log('Supabase ikke tilkoblet:', err.message);
+  }
+}
+
+async function lastPDFBibliotek(sbClient, brukerPlan) {
+  const { data: pdfer } = await sbClient
+    .from('pdf_dokumenter')
+    .select('*')
+    .eq('aktiv', true)
+    .order('krever_plan', { ascending: true });
+
+  if (!pdfer || pdfer.length === 0) return;
+
+  const brukerNivaa = PLAN_NIVAA[brukerPlan] || 0;
+
+  // Oppdater PDF-grid i dashboard
+  const dashGrid = document.querySelector('.pdf-grid');
+  if (dashGrid) {
+    dashGrid.innerHTML = pdfer.slice(0, 4).map(pdf => {
+      const harTilgang = brukerNivaa >= (PLAN_NIVAA[pdf.krever_plan] || 0);
+      const ikon = KATEGORI_IKON[pdf.kategori] || '📄';
+      const planBadge = pdf.krever_plan === 'gratis' ? 'free' : pdf.krever_plan === 'student' ? 'member' : pdf.krever_plan;
+      const planTekst = pdf.krever_plan === 'gratis' ? 'Gratis' : pdf.krever_plan.charAt(0).toUpperCase() + pdf.krever_plan.slice(1);
+
+      return harTilgang ? `
+        <div class="pdf-card" onclick="window.open('${pdf.drive_url}','_blank')">
+          <div class="pdf-card-top">
+            <div class="pdf-thumb">${ikon}</div>
+            <span class="pdf-status ${planBadge}">${planTekst}</span>
+          </div>
+          <h4>${pdf.tittel}</h4>
+          <div class="pdf-card-meta">${pdf.kategori} <div class="pdf-dot"></div> Klikk for å åpne</div>
+        </div>` : `
+        <div class="pdf-card locked">
+          <div class="pdf-card-top">
+            <div class="pdf-thumb">${ikon}</div>
+            <span class="pdf-status locked">${planTekst}</span>
+          </div>
+          <h4>${pdf.tittel}</h4>
+          <div class="pdf-card-meta">${pdf.kategori}</div>
+          <div class="lock-overlay"><span>🔒</span><p>Krever ${planTekst}-plan</p></div>
+        </div>`;
+    }).join('');
+  }
+
+  // Oppdater full PDF-grid i bibliotek-seksjonen
+  const fullGrid = document.getElementById('pdf-grid-full');
+  if (fullGrid) {
+    fullGrid.innerHTML = pdfer.map(pdf => {
+      const harTilgang = brukerNivaa >= (PLAN_NIVAA[pdf.krever_plan] || 0);
+      const ikon = KATEGORI_IKON[pdf.kategori] || '📄';
+      const planTekst = pdf.krever_plan.charAt(0).toUpperCase() + pdf.krever_plan.slice(1);
+
+      return harTilgang ? `
+        <div class="pdf-card" data-cat="${pdf.kategori}" onclick="window.open('${pdf.drive_url}','_blank')">
+          <div class="pdf-card-top">
+            <div class="pdf-thumb">${ikon}</div>
+            <span class="pdf-status ${pdf.krever_plan === 'gratis' ? 'free' : 'member'}">${planTekst}</span>
+          </div>
+          <h4>${pdf.tittel}</h4>
+          <div class="pdf-card-meta">${pdf.kategori} <div class="pdf-dot"></div> Klikk for å åpne i Drive</div>
+        </div>` : `
+        <div class="pdf-card locked" data-cat="${pdf.kategori}">
+          <div class="pdf-card-top">
+            <div class="pdf-thumb">${ikon}</div>
+            <span class="pdf-status locked">${planTekst}</span>
+          </div>
+          <h4>${pdf.tittel}</h4>
+          <div class="pdf-card-meta">${pdf.kategori}</div>
+          <div class="lock-overlay"><span>🔒</span><p>Krever ${planTekst}-plan — <a href="../index.html#priser" style="color:var(--accent)">Oppgrader</a></p></div>
+        </div>`;
+    }).join('');
+  }
+}
+
+function visMeldingIkkeInnlogget() {
+  document.querySelector('.welcome-text h2').textContent = 'Du er ikke innlogget';
+  document.querySelector('.welcome-text p').innerHTML = '<a href="index.html" style="color:var(--accent2)">Gå til forsiden for å registrere deg →</a>';
+}
+
+// ─── LOGG INN / UT ───
+async function loggUt() {
+  const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  await sbClient.auth.signOut();
+  window.location.href = 'index.html';
+}
 </script>
 </body>
 </html>
