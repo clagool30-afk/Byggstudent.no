@@ -226,7 +226,7 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
     <a href="#faq">FAQ</a>
   </div>
   <div class="nav-actions">
-    <a class="btn-ghost" href="javascript:void(0)" onclick="openModal('logg-inn')">Logg inn</a>
+    <a class="btn-ghost" href="javascript:void(0)" onclick="openLogin()">Logg inn</a>
     <a class="btn-fill" href="#priser">Bli medlem</a>
   </div>
 </nav>
@@ -629,6 +629,10 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
       <input type="email" id="reg-email" placeholder="ola@student.no">
     </div>
     <div class="field">
+      <label>Passord (velg selv)</label>
+      <input type="password" id="reg-pass" placeholder="Minimum 6 tegn">
+    </div>
+    <div class="field">
       <label>Betalingsmåte</label>
       <select id="reg-pay">
         <option>PayPal</option>
@@ -636,6 +640,25 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
       </select>
     </div>
     <button class="submit-btn" onclick="sendRegistration()" id="reg-btn">Send registrering →</button>
+  </div>
+</div>
+
+<!-- LOGG INN MODAL -->
+<div class="modal-overlay" id="modal-login" onclick="if(event.target.id==='modal-login')closeLogin()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">×</button>
+    <h3>Logg inn</h3>
+    <p class="modal-sub">Skriv inn e-post og passord</p>
+    <div class="field">
+      <label>E-postadresse</label>
+      <input type="email" id="login-email" placeholder="ola@student.no">
+    </div>
+    <div class="field">
+      <label>Passord</label>
+      <input type="password" id="login-pass" placeholder="••••••••">
+    </div>
+    <button class="submit-btn" onclick="loggInn()" id="login-btn">Logg inn →</button>
+    <p style="text-align:center;margin-top:0.75rem;font-size:0.8rem;color:var(--muted)">Ikke medlem? <a href="#priser" onclick="closeLogin()" style="color:var(--accent)">Registrer deg her</a></p>
   </div>
 </div>
 
@@ -679,7 +702,31 @@ function openModal(plan){
   document.getElementById('reg-btn').textContent=p.btnText;
   document.getElementById('modal').classList.add('open');
 }
-function closeModal(){document.getElementById('modal').classList.remove('open')}
+function closeLogin(){document.getElementById('modal-login').classList.remove('open')}
+function openLogin(){document.getElementById('modal-login').classList.add('open')}
+
+async function loggInn(){
+  const epost = document.getElementById('login-email').value.trim();
+  const passord = document.getElementById('login-pass').value;
+  if(!epost||!passord){showToast('⚠️ Fyll ut e-post og passord','error');return}
+
+  const btn = document.getElementById('login-btn');
+  btn.textContent = 'Logger inn...';
+  btn.disabled = true;
+
+  try {
+    const { data, error } = await sbClient.auth.signInWithPassword({
+      email: epost, password: passord
+    });
+    if(error) throw error;
+    showToast('✅ Innlogget! Sender deg til dashbordet...');
+    setTimeout(()=>window.location.href='ByggStudent_Dashboard.html', 1500);
+  } catch(err) {
+    showToast('❌ Feil e-post eller passord. Prøv igjen.','error');
+    btn.textContent = 'Logg inn →';
+    btn.disabled = false;
+  }
+}
 function closeModalOutside(e){if(e.target.id==='modal')closeModal()}
 
 function showToast(msg,type=''){
@@ -694,6 +741,7 @@ function showToast(msg,type=''){
 async function sendRegistration(){
   const navn = document.getElementById('reg-name').value.trim();
   const epost = document.getElementById('reg-email').value.trim();
+  const passord = document.getElementById('reg-pass')?.value || 'byggstudent123';
   const betaling = document.getElementById('reg-pay').value;
   const plan = valgtPlan;
 
@@ -705,7 +753,14 @@ async function sendRegistration(){
   btn.disabled = true;
 
   try {
-    // 1. Lagre i Supabase
+    // 1. Opprett bruker i Supabase Auth
+    const { error: authError } = await sbClient.auth.signUp({
+      email: epost,
+      password: passord,
+      options: { data: { navn } }
+    });
+
+    // 2. Lagre i brukere-tabellen
     const {error} = await sbClient.from('brukere').insert({
       navn, epost, plan, aktiv: false
     });
