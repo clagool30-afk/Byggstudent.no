@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -352,24 +353,20 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
           <!-- PROGRESS -->
           <div class="card">
             <div class="card-header">
-              <div class="card-title">📈 Fremgang</div>
+              <div class="card-title">📚 Dine fagmapper</div>
             </div>
             <div class="progress-list">
-              <div class="progress-item">
-                <div class="progress-top"><span class="progress-name">Statikk & Likevekt</span><span class="progress-pct">75%</span></div>
-                <div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
+              <div class="progress-item" style="background:var(--bg2);border-radius:8px;padding:0.6rem 0.85rem;cursor:pointer" onclick="showSection('bibliotek')">
+                <div class="progress-top"><span class="progress-name">⚖️ Statikk & Likevekt</span><span class="progress-pct" style="color:var(--accent)">→</span></div>
               </div>
-              <div class="progress-item">
-                <div class="progress-top"><span class="progress-name">Mekanikk</span><span class="progress-pct">60%</span></div>
-                <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+              <div class="progress-item" style="background:var(--bg2);border-radius:8px;padding:0.6rem 0.85rem;cursor:pointer" onclick="showSection('bibliotek')">
+                <div class="progress-top"><span class="progress-name">📐 Mekanikk</span><span class="progress-pct" style="color:var(--accent)">→</span></div>
               </div>
-              <div class="progress-item">
-                <div class="progress-top"><span class="progress-name">Betong EC2</span><span class="progress-pct">20%</span></div>
-                <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+              <div class="progress-item" style="background:var(--bg2);border-radius:8px;padding:0.6rem 0.85rem;cursor:pointer" onclick="showSection('bibliotek')">
+                <div class="progress-top"><span class="progress-name">🏗️ Betong EC2</span><span class="progress-pct" style="color:var(--accent)">→</span></div>
               </div>
-              <div class="progress-item">
-                <div class="progress-top"><span class="progress-name">Eksamensprep</span><span class="progress-pct">40%</span></div>
-                <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+              <div class="progress-item" style="background:var(--bg2);border-radius:8px;padding:0.6rem 0.85rem;cursor:pointer" onclick="showSection('bibliotek')">
+                <div class="progress-top"><span class="progress-name">📝 Eksamensforberedelse</span><span class="progress-pct" style="color:var(--accent)">→</span></div>
               </div>
             </div>
           </div>
@@ -381,13 +378,11 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
               <a class="card-link" href="#" onclick="showSection('timer')">Se alle →</a>
             </div>
             <div class="booking-slots">
-              <div class="slot">
-                <div class="slot-left">
-                  <div class="slot-dot soon"></div>
-                  <div class="slot-info">
-                    <div class="slot-date">Mandag 28. april</div>
-                    <div class="slot-time">kl. 18:00 · 60 min · Teams</div>
-                  </div>
+              <div style="padding:1rem;text-align:center;color:var(--muted);font-size:0.83rem">
+                <div style="font-size:1.5rem;margin-bottom:0.5rem">📅</div>
+                Ingen kommende timer.<br>
+                <a href="https://byggstudent.no#booking" style="color:var(--accent);font-weight:600">Book en privattime →</a>
+              </div>
                 </div>
                 <span class="slot-tag soon">Om 4 dager</span>
               </div>
