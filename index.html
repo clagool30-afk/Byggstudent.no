@@ -518,49 +518,16 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
       </div>
       <div class="booking-form">
         <div class="form-title">Book di privattime</div>
-        <div class="field">
-          <label>Fullt navn</label>
-          <input type="text" placeholder="Ola Nordmann">
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6">Velg en ledig tid direkte i kalenderen min. Du mottar bekreftelse på e-post med Zoom-lenke!</p>
+        
+        <!-- Calendly inline widget -->
+        <div class="calendly-inline-widget" 
+          data-url="https://calendly.com/clagool30/privattime-med-claudio?hide_gdpr_banner=1&primary_color=c35a2a" 
+          style="min-width:280px;height:500px;border-radius:12px;overflow:hidden">
         </div>
-        <div class="field">
-          <label>E-postadresse</label>
-          <input type="email" placeholder="ola@student.no">
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>Dato</label>
-            <input type="date">
-          </div>
-          <div class="field">
-            <label>Klokkeslett</label>
-            <input type="time">
-          </div>
-        </div>
-        <div class="field">
-          <label>Fagområde</label>
-          <select>
-            <option value="">Velg fag...</option>
-            <option>Statikk &amp; Likevekt</option>
-            <option>Mekanikk &amp; Faghetslære</option>
-            <option>Betongkonstruksjon (EC2)</option>
-            <option>Stålkonstruksjon (EC3)</option>
-            <option>Trekonstruksjon (EC5)</option>
-            <option>Eksamensforberedelse</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Hva trenger du hjelp med?</label>
-          <textarea placeholder="F.eks. «Forstår ikke bøyingsmoment i kontinuerlege bjelkar, oppgave 16.6»"></textarea>
-        </div>
-        <div class="field">
-          <label>Betalingsmåte</label>
-          <select>
-            <option>PayPal</option>
-            <option>Vipps</option>
-          </select>
-        </div>
-        <button class="submit-btn" onclick="sendBooking()">Send bookingforespørsel →</button>
-        <div class="vipps-note">🔒 Du mottar en betalingslenke på e-post etter bekreftelse</div>
+        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+        
+        <div class="vipps-note">🔒 Betaling via PayPal eller Vipps etter bekreftelse · 400 kr/time</div>
       </div>
     </div>
   </div>
