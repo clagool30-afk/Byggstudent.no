@@ -406,29 +406,10 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
           <button class="panel-action" onclick="showSection('bookings',null)">Se alle →</button>
         </div>
         <div class="panel-body">
-          <div class="booking-item">
-            <div class="booking-time"><div class="booking-day">Man</div><div class="booking-date">28</div></div>
-            <div class="booking-info">
-              <div class="booking-name">Ole Studentsen</div>
-              <div class="booking-detail">kl. 18:00–19:00 · Statikk & Likevekt · Teams · Student-plan (inkl.)</div>
-            </div>
-            <div class="booking-status"><span class="bstatus confirmed">Bekreftet</span><span class="bamt">Inkludert</span></div>
-          </div>
-          <div class="booking-item">
-            <div class="booking-time"><div class="booking-day">Tirs</div><div class="booking-date">29</div></div>
-            <div class="booking-info">
-              <div class="booking-name">Maria Nilsen</div>
-              <div class="booking-detail">kl. 17:00–18:00 · Betong EC2 · Teams · Pro-plan (inkl.)</div>
-            </div>
-            <div class="booking-status"><span class="bstatus confirmed">Bekreftet</span><span class="bamt">Inkludert</span></div>
-          </div>
-          <div class="booking-item">
-            <div class="booking-time"><div class="booking-day">Fre</div><div class="booking-date">2</div></div>
-            <div class="booking-info">
-              <div class="booking-name">Anders Hansen</div>
-              <div class="booking-detail">kl. 19:00–20:00 · Mekanikk & Bøyning · Teams · Enkelt time</div>
-            </div>
-            <div class="booking-status"><span class="bstatus pending">Venter svar</span><span class="bamt">400 kr</span></div>
+          <div style="padding:2rem;text-align:center;color:var(--muted);font-size:0.85rem">
+            <div style="font-size:2rem;margin-bottom:0.5rem">📅</div>
+            Ingen bookinger ennå.<br>
+            <span style="font-size:0.78rem">Bookinger via Calendly vises her.</span>
           </div>
         </div>
       </div>
@@ -438,18 +419,14 @@ body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--i
     <div id="section-members" style="display:none">
       <div class="panel">
         <div class="panel-header">
-          <div class="panel-title">👥 Alle medlemmer (8)</div>
+          <div class="panel-title">👥 Alle medlemmer</div>
           <button class="panel-action" onclick="openModal('email')">✉ Send gruppe-e-post</button>
         </div>
         <div style="overflow-x:auto">
           <table class="members-table">
             <thead><tr><th>Navn</th><th>E-post</th><th>Plan</th><th>Status</th><th>Betalt</th><th>Siden</th><th>Handlinger</th></tr></thead>
-            <tbody>
-              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">OS</div><div class="member-name">Ole Studentsen</div></div></td><td style="color:var(--muted);font-size:0.78rem">ole@student.no</td><td><span class="plan-badge student">Student</span></td><td><span class="status-dot active"></span>Aktiv</td><td>179 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">1. mars</td><td><div style="display:flex;gap:5px"><button class="action-btn" onclick="showToast('📧 E-post sendt!')">E-post</button><button class="action-btn" onclick="showToast('✏️ Redigerer Ole...')">Rediger</button></div></td></tr>
-              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">MN</div><div class="member-name">Maria Nilsen</div></div></td><td style="color:var(--muted);font-size:0.78rem">maria@fagskolen.no</td><td><span class="plan-badge pro">Ingeniør Pro</span></td><td><span class="status-dot active"></span>Aktiv</td><td>379 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">15. feb</td><td><div style="display:flex;gap:5px"><button class="action-btn" onclick="showToast('📧 E-post sendt!')">E-post</button><button class="action-btn" onclick="showToast('✏️ Redigerer Maria...')">Rediger</button></div></td></tr>
-              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">AH</div><div class="member-name">Anders Hansen</div></div></td><td style="color:var(--muted);font-size:0.78rem">anders@uia.no</td><td><span class="plan-badge basis">Basis</span></td><td><span class="status-dot pending"></span>Venter</td><td>79 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">I dag</td><td><button class="action-btn approve" onclick="approveMember('Anders Hansen')">✓ Godkjenn</button></td></tr>
-              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">LB</div><div class="member-name">Lena Berg</div></div></td><td style="color:var(--muted);font-size:0.78rem">lena@hiof.no</td><td><span class="plan-badge student">Student</span></td><td><span class="status-dot pending"></span>Venter</td><td>179 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">I dag</td><td><button class="action-btn approve" onclick="approveMember('Lena Berg')">✓ Godkjenn</button></td></tr>
-              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">KJ</div><div class="member-name">Kristian Johansen</div></div></td><td style="color:var(--muted);font-size:0.78rem">kj@ntnu.no</td><td><span class="plan-badge pro">Ingeniør Pro</span></td><td><span class="status-dot active"></span>Aktiv</td><td>379 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">10. jan</td><td><div style="display:flex;gap:5px"><button class="action-btn" onclick="showToast('📧 E-post sendt!')">E-post</button><button class="action-btn" onclick="showToast('✏️ Redigerer...')">Rediger</button></div></td></tr>
+            <tbody id="members-tbody">
+              <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="member-av">OS</div><div class="member-name">Ole Studentsen</div></div></td><td style="color:var(--muted);font-size:0.78rem">ole@student.no</td><td><span class="plan-badge student">Student</span></td><td><span class="status-dot active"></span>Aktiv</td><td>179 kr/mnd</td><td style="color:var(--muted);font-size:0.75rem">1. mars</td><td><div style="display:flex;gap:5px"><button class="action-btn" onclick="showToast('📧 E-post sendt til Ole!')">E-post</button><button class="action-btn danger" onclick="showToast('⛔ Ole deaktivert!')">Avvis</button></div></td></tr>
             </tbody>
           </table>
         </div>
