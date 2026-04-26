@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -203,24 +204,7 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
 
 <!-- NAV -->
 <!-- BANNER ØVERST -->
-<div id="topbanner" style="background:linear-gradient(90deg,#c35a2a,#e07a4a,#c35a2a);background-size:200% 100%;animation:slidebg 3s linear infinite;overflow:hidden;position:sticky;top:0;z-index:999">
-  <div style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:0.7rem 1.5rem;white-space:nowrap;animation:marquee 18s linear infinite">
-    <span style="color:white;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;letter-spacing:0.05em">🔥 KUN 5 PLASSER IGJEN DENNE MÅNEDEN</span>
-    <span style="color:rgba(255,255,255,0.6);font-size:0.8rem">·</span>
-    <span style="color:white;font-size:0.82rem;font-weight:500">Sikre deg tilgang nå — byggstudent.no</span>
-    <span style="color:rgba(255,255,255,0.6);font-size:0.8rem">·</span>
-    <span style="color:white;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;letter-spacing:0.05em">🔥 KUN 5 PLASSER IGJEN DENNE MÅNEDEN</span>
-    <span style="color:rgba(255,255,255,0.6);font-size:0.8rem">·</span>
-    <span style="color:white;font-size:0.82rem;font-weight:500">Sikre deg tilgang nå — byggstudent.no</span>
-    <span style="color:rgba(255,255,255,0.6);font-size:0.8rem">·</span>
-    <span style="color:white;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;letter-spacing:0.05em">🔥 KUN 5 PLASSER IGJEN DENNE MÅNEDEN</span>
-  </div>
-  <button onclick="document.getElementById('topbanner').style.display='none'" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);border:none;color:white;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center">×</button>
-</div>
-<style>
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-@keyframes slidebg{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-</style>
+
 <nav>
   <a class="logo" href="#">
     <svg width="360" height="90" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg">
@@ -249,6 +233,24 @@ footer{background:var(--ink);color:white;padding:3rem 2.5rem 2rem}
     <a class="btn-fill" href="#priser">Bli medlem</a>
   </div>
 </nav>
+<div id="topbanner" style="background:linear-gradient(90deg,#c35a2a,#e07a4a,#c35a2a);background-size:200% 100%;animation:slidebg 3s linear infinite;overflow:hidden;position:sticky;top:58px;z-index:99;margin-top:10px">
+  <div style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:0.7rem 1.5rem;white-space:nowrap;animation:marquee 18s linear infinite">
+    <span style="color:white;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;letter-spacing:0.05em">🔥 KUN 5 PLASSER IGJEN DENNE MÅNEDEN</span>
+    <span style="color:rgba(255,255,255,0.6);font-size:0.8rem">·</span>
+    <span style="color:white;font-size:0.82rem;font-weight:500">Sikre deg tilgang nå — byggstudent.no</span>
+    <span style="color:rgba(255,255,255,0.6);font-size:0.8rem">·</span>
+    <span style="color:white;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;letter-spacing:0.05em">🔥 KUN 5 PLASSER IGJEN DENNE MÅNEDEN</span>
+    <span style="color:rgba(255,255,255,0.6);font-size:0.8rem">·</span>
+    <span style="color:white;font-size:0.82rem;font-weight:500">Sikre deg tilgang nå — byggstudent.no</span>
+    <span style="color:rgba(255,255,255,0.6);font-size:0.8rem">·</span>
+    <span style="color:white;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:800;letter-spacing:0.05em">🔥 KUN 5 PLASSER IGJEN DENNE MÅNEDEN</span>
+  </div>
+  <button onclick="document.getElementById('topbanner').style.display='none'" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);border:none;color:white;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center">×</button>
+</div>
+<style>
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes slidebg{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+</style>
 
 <!-- HERO -->
 <section style="padding-top:64px">
