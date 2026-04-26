@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ByggStudent.no — Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+// Passord beskyttelse
+(function(){
+  const ADMIN_PASS = 'Bygg2025!';
+  const ok = sessionStorage.getItem('adminOK');
+  if(ok !== 'true'){
+    const input = prompt('🔒 Admin-tilgang — skriv inn passordet:');
+    if(input !== ADMIN_PASS){
+      document.write('<div style="font-family:sans-serif;text-align:center;padding:4rem;background:#0f1117;color:white;min-height:100vh"><h2 style="color:#c35a2a">❌ Feil passord</h2><p style="margin-top:1rem;color:#888">Tilgang nektet. <a href="/" style="color:#c35a2a">Gå til forsiden</a></p></div>');
+      document.close();
+      return;
+    }
+    sessionStorage.setItem('adminOK','true');
+  }
+})();
+</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
